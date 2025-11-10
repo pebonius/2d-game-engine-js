@@ -17,19 +17,26 @@ export default class App {
     this.gameLoop();
   }
   gameLoop() {
-    this.update();
-    this.draw();
+    const scene = this.currentScene;
+
+    if (!scene) {
+      this.running = false;
+      return;
+    }
+
+    this.update(scene);
+    this.draw(scene);
 
     if (this.running) {
       requestAnimationFrame(() => this.gameLoop());
     }
   }
-  update() {
-    this.currentScene.update();
+  update(scene) {
+    scene.update();
   }
-  draw() {
+  draw(scene) {
     clearContext(this.context);
-    this.currentScene.draw(this.context);
+    scene.draw(this.context);
   }
 }
 

@@ -2,7 +2,7 @@ import { getCanvasCenter, drawRectangle } from "./graphics.js";
 
 export default class TestingScene {
   constructor() {
-    this.rotation = 0;
+    this.rotation = 45;
     this.rotationSpeed = 10;
     this.animationSize = { x: 50, y: 50 };
     this.animationColor = "green";
@@ -13,7 +13,7 @@ export default class TestingScene {
     ];
   }
   update() {
-    this.rotation += this.rotationSpeed;
+    // this.rotation += this.rotationSpeed;
   }
   draw(context) {
     for (let index = 0; index < this.animations.length; index++) {
