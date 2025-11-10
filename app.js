@@ -1,4 +1,4 @@
-import { clearContext, drawRectangle, getCanvasCenter } from "./graphics.js";
+import { clearContext } from "./graphics.js";
 import TestingScene from "./testingScene.js";
 
 const testingScene = new TestingScene();
@@ -14,11 +14,9 @@ export default class App {
   }
   start() {
     this.running = true;
-    this.gameLoop();
+    this.gameLoop(this.currentScene);
   }
-  gameLoop() {
-    const scene = this.currentScene;
-
+  gameLoop(scene) {
     if (!scene) {
       this.running = false;
       return;
@@ -28,7 +26,7 @@ export default class App {
     this.draw(scene);
 
     if (this.running) {
-      requestAnimationFrame(() => this.gameLoop());
+      requestAnimationFrame(() => this.gameLoop(scene));
     }
   }
   update(scene) {

@@ -1,20 +1,34 @@
 export function clearContext(context) {
-  context.reset();
+  context.save();
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-  context.fillStyle = "black";
-  context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+  context.restore();
 }
 
-export function drawRectangle(context, x, y, width, height, rotationDegrees, color) {
+export function drawRectangle(
+  context,
+  x,
+  y,
+  width,
+  height,
+  rotationDegrees,
+  color
+) {
   context.save();
   rotateAroundCenter(context, x, y, width, height, rotationDegrees);
-  context.rect(x, y, width, height);
   context.fillStyle = color;
+  context.fillRect(x, y, width, height);
   context.fill();
   context.restore();
 }
 
-export function rotateAroundCenter(context, x, y, width, height, rotationDegrees) {
+export function rotateAroundCenter(
+  context,
+  x,
+  y,
+  width,
+  height,
+  rotationDegrees
+) {
   const halfWidth = width * 0.5;
   const halfHeight = height * 0.5;
   context.translate(x + halfWidth, y + halfHeight);

@@ -1,37 +1,21 @@
-import { getCanvasCenter, drawRectangle } from "./graphics.js";
+import Rectangle from "./rectangle.js";
 
 export default class TestingScene {
   constructor() {
-    this.rotation = 45;
-    this.rotationSpeed = 10;
-    this.animationSize = { x: 50, y: 50 };
-    this.animationColor = "green";
-    this.animations = [
-      { x: -100, y: 0 },
-      { x: 0, y: 0 },
-      { x: 100, y: 0 },
+    this.rectangles = [
+      new Rectangle(10, 10, 10, 10, 45, "black"),
+      new Rectangle(50, 50, 30, 20, 0, "brown"),
+      new Rectangle(150, 150, 50, 50, 120, "blue"),
     ];
   }
   update() {
-    // this.rotation += this.rotationSpeed;
+    this.rectangles.forEach((element) => {
+      element.rotationDeg++;
+    });
   }
   draw(context) {
-    for (let index = 0; index < this.animations.length; index++) {
-      const element = this.animations[index];
-
-      drawRectangle(
-        context,
-        getCanvasCenter(context.canvas).x -
-          this.animationSize.x * 0.5 +
-          element.x,
-        getCanvasCenter(context.canvas).y -
-          this.animationSize.y * 0.5 +
-          element.y,
-        this.animationSize.x,
-        this.animationSize.y,
-        this.rotation,
-        this.animationColor
-      );
-    }
+    this.rectangles.forEach((element) => {
+      element.draw(context);
+    });
   }
 }
