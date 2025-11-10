@@ -1,30 +1,7 @@
 import { clearContext, drawRectangle, getCanvasCenter } from "./graphics.js";
+import TestingScene from "./testingScene.js";
 
-let rotation = 0;
-const rotationSpeed = 10;
-const animationSize = { x: 50, y: 50 };
-const animationColor = "green";
-const animations = [
-  { x: -100, y: 0 },
-  { x: 0, y: 0 },
-  { x: 100, y: 0 },
-];
-
-function drawAnimations(context) {
-  for (let index = 0; index < animations.length; index++) {
-    const element = animations[index];
-
-    drawRectangle(
-      context,
-      getCanvasCenter(context.canvas).x - animationSize.x * 0.5 + element.x,
-      getCanvasCenter(context.canvas).y - animationSize.y * 0.5 + element.y,
-      animationSize.x,
-      animationSize.y,
-      rotation,
-      animationColor
-    );
-  }
-}
+const testingScene = new TestingScene();
 
 export default class App {
   constructor() {
@@ -47,11 +24,11 @@ export default class App {
     }
   }
   update() {
-    rotation += rotationSpeed;
+    testingScene.update();
   }
   draw() {
     clearContext(this.context);
-    drawAnimations(this.context);
+    testingScene.draw(this.context);
   }
 }
 
