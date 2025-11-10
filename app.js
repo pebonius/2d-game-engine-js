@@ -8,29 +8,28 @@ export default class App {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.imageSmoothingEnabled = false;
-    this.context.save();
     this.running = false;
-    this.currentScene = testingScene;
   }
-  start() {
+  start(scene) {
+    this.currentScene = scene;
     this.running = true;
-    this.gameLoop(this.currentScene);
+    this.gameLoop();
   }
-  gameLoop(scene) {
-    if (!scene) {
+  gameLoop() {
+    if (!this.currentScene) {
       this.running = false;
       return;
     }
 
-    this.update(scene);
-    this.draw(scene);
+    this.update(this.currentScene);
+    this.draw(this.currentScene);
 
     if (this.running) {
-      requestAnimationFrame(() => this.gameLoop(scene));
+      requestAnimationFrame(() => this.gameLoop());
     }
   }
   update(scene) {
-    scene.update();
+    scene.update(this);
   }
   draw(scene) {
     clearContext(this.context);
@@ -40,7 +39,7 @@ export default class App {
 
 function init() {
   const app = new App();
-  app.start();
+  app.start(testingScene);
 }
 
 init();
