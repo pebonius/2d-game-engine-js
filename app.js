@@ -10,6 +10,7 @@ export default class App {
     this.context.imageSmoothingEnabled = false;
     this.context.save();
     this.running = false;
+    this.currentScene = testingScene;
   }
   start() {
     this.running = true;
@@ -24,11 +25,11 @@ export default class App {
     }
   }
   update() {
-    testingScene.update();
+    this.currentScene.update();
   }
   draw() {
     clearContext(this.context);
-    testingScene.draw(this.context);
+    this.currentScene.draw(this.context);
   }
 }
 
