@@ -1,7 +1,7 @@
 export default class Debug {
   /**
-   * The static log() method from this class should be used for logging in the game
-   * to avoid memory leaks.
+   * the static log() method from this class should be used for logging
+   * everywhere in the codebase to avoid memory leaks. do not use console.log()!!!
    */
   constructor() {}
   static log(obj) {
