@@ -1,3 +1,21 @@
+export const defaultFont = "Courier New";
+
+export const drawText = (
+  context,
+  text,
+  fontSize,
+  color,
+  posX,
+  posY,
+  font = defaultFont
+) => {
+  context.font = fontSize + "px " + font;
+  context.fillStyle = color;
+  context.textAlign = "left";
+  context.textBaseline = "top";
+  context.fillText(text, posX, posY);
+};
+
 export function clearContext(context) {
   context.save();
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
@@ -48,4 +66,17 @@ export function rotateAroundCenter(
 
 export function getCanvasCenter(canvas) {
   return { x: canvas.width * 0.5, y: canvas.height * 0.5 };
+}
+
+export function distance(pointA, pointB) {
+  if (
+    !Number.isInteger(pointA.x) ||
+    !Number.isInteger(pointA.y) ||
+    !Number.isInteger(pointB.x) ||
+    !Number.isInteger(pointB.y)
+  ) {
+    throw new TypeError("x and y for provided values must be integers");
+  }
+
+  return Math.hypot(pointA.x - pointB.x, pointA.y - pointB.y);
 }

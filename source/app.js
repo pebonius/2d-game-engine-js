@@ -1,6 +1,7 @@
 import { clearContext } from "./graphics.js";
 import TestingScene from "./testingScene.js";
 import Debug from "./debug.js";
+import InputManager from "./input.js";
 
 const testingScene = new TestingScene();
 
@@ -9,9 +10,9 @@ export default class Game {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.imageSmoothingEnabled = false;
-    this.running = false;
   }
   start(scene) {
+    this.input = new InputManager(this.canvas);
     this.currentScene = scene;
     this.running = true;
     this.gameLoop();
