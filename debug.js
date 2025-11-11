@@ -5,9 +5,6 @@ export default class Debug {
    */
   constructor() {}
   static log(obj) {
-    if (!isRunningLocally()) {
-      return;
-    }
     try {
       console.log(obj.toString());
     } catch (error) {

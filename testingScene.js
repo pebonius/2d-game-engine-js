@@ -16,7 +16,7 @@ export default class TestingScene {
     }
 
     if (this.rectangles[0].isInViewPort(game.canvas)) {
-      this.rectangles[0].x--;
+      this.rectangles[0].y++;
     }
   }
   draw(context) {

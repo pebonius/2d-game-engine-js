@@ -1,5 +1,6 @@
 import { clearContext } from "./graphics.js";
 import TestingScene from "./testingScene.js";
+import Debug from "./debug.js";
 
 const testingScene = new TestingScene();
 
@@ -14,6 +15,7 @@ export default class Game {
     this.currentScene = scene;
     this.running = true;
     this.gameLoop();
+    Debug.log("game started");
   }
   gameLoop() {
     if (!this.currentScene) {
