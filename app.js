@@ -3,7 +3,7 @@ import TestingScene from "./testingScene.js";
 
 const testingScene = new TestingScene();
 
-export default class App {
+export default class Game {
   constructor() {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
@@ -38,8 +38,8 @@ export default class App {
 }
 
 function init() {
-  const app = new App();
-  app.start(testingScene);
+  const game = new Game();
+  game.start(testingScene);
 }
 
 init();
