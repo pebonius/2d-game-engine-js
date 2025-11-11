@@ -1,4 +1,4 @@
-import { drawRectangle } from "./graphics.js";
+import { drawRectangle, normalizeRotationDegrees } from "./graphics.js";
 
 export default class Rectangle {
   constructor(x, y, width, height, rotationDeg, color) {
@@ -8,6 +8,18 @@ export default class Rectangle {
     this.height = height;
     this.rotationDeg = rotationDeg;
     this.color = color;
+  }
+  get rotationDeg() {
+    return this._rotationDeg;
+  }
+  set rotationDeg(value) {
+    if (!Number.isInteger(value)) {
+      throw new RangeError(
+        `provided value should be an integer, and was ${typeof value}`
+      );
+    }
+
+    this._rotationDeg = normalizeRotationDegrees(value);
   }
   isInViewPort(canvas) {
     return (
@@ -32,7 +44,7 @@ export default class Rectangle {
       this.y,
       this.width,
       this.height,
-      this.rotationDeg,
+      this._rotationDeg,
       this.color
     );
   }

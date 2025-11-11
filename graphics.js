@@ -4,6 +4,16 @@ export function clearContext(context) {
   context.restore();
 }
 
+export function normalizeRotationDegrees(degrees) {
+  let normalizedRotation = degrees % 360;
+
+  if (normalizedRotation < 0) {
+    normalizedRotation += 360;
+  }
+
+  return normalizedRotation;
+}
+
 export function drawRectangle(
   context,
   x,
