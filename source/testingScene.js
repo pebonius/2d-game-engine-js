@@ -2,7 +2,7 @@ import Rectangle from "./rectangle.js";
 import Debug from "./debug.js";
 import TestingHud from "./testingHud.js";
 import SpriteSheet from "./spriteSheet.js";
-import { drawSpriteFromSheet } from "./graphics.js";
+import Sprite from "./sprite.js";
 
 export default class TestingScene {
   #testingHud = new TestingHud();
@@ -13,12 +13,25 @@ export default class TestingScene {
     new Rectangle(250, 250, 40, 40, 0, "lime"),
   ];
   #fruitsSpritesheet;
+  #apple;
   #animalsSpriteSheet;
 
   constructor(game) {
     this.#fruitsSpritesheet = new SpriteSheet(
       game.content.getAsset("fruits"),
       16
+    );
+
+    this.#apple = new Sprite(
+      this.#fruitsSpritesheet,
+      12,
+      420,
+      140,
+      false,
+      false,
+      4,
+      4,
+      0
     );
   }
   update(game) {
@@ -40,29 +53,7 @@ export default class TestingScene {
       element.draw(context);
     });
 
-    drawSpriteFromSheet(
-      context,
-      this.#fruitsSpritesheet,
-      12,
-      { x: 250, y: 300 },
-      false,
-      false,
-      4,
-      4,
-      45
-    );
-
-        drawSpriteFromSheet(
-      context,
-      this.#fruitsSpritesheet,
-      0,
-      { x: 300, y: 300 },
-      false,
-      false,
-      8,
-      8,
-      0
-    );
+    this.#apple.draw(context);
 
     this.#testingHud.draw(context);
   }
