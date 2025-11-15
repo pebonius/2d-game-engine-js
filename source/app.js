@@ -2,6 +2,7 @@ import { clearContext } from "./graphics.js";
 import TestingScene from "./testingScene.js";
 import Debug from "./debug.js";
 import InputManager from "./input.js";
+import ContentManager from "./content.js";
 
 const testingScene = new TestingScene();
 
@@ -10,9 +11,14 @@ export default class Game {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.imageSmoothingEnabled = false;
+    this.input = new InputManager(this.canvas);
+    this.content = new ContentManager();
+    this.content.onFinishedLoading = () => {
+      this.start(testingScene);
+    };
+    this.content.loadContent();
   }
   start(scene) {
-    this.input = new InputManager(this.canvas);
     this.currentScene = scene;
     this.running = true;
     this.gameLoop();
@@ -42,7 +48,6 @@ export default class Game {
 
 function init() {
   const game = new Game();
-  game.start(testingScene);
 }
 
 init();

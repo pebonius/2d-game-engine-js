@@ -204,3 +204,17 @@ export const passPercentileRoll = (chance) => {
     return randomFloat(0, 100) <= chance;
   }
 };
+
+export const getPropertyByName = (propertyName, obj) => {
+  if (!propertyName) {
+    throw new Error("property name was not defined");
+  }
+  if (typeof propertyName !== "string") {
+    throw new Error("property name must be a string");
+  }
+  if (!isDefined(this[propertyName])) {
+    throw new Error(`property <<${propertyName}>> not found`);
+  }
+
+  return obj[propertyName];
+};
