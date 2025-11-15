@@ -1,19 +1,25 @@
 import Rectangle from "./rectangle.js";
 import Debug from "./debug.js";
 import TestingHud from "./testingHud.js";
+import SpriteSheet from "./spriteSheet.js";
+import { drawSprite } from "./graphics.js";
 
 export default class TestingScene {
-  #testingHud;
-  #rectangles;
+  #testingHud = new TestingHud();
+  #rectangles = [
+    new Rectangle(20, 10, 20, 20, 0, "black"),
+    new Rectangle(50, 50, 30, 20, 0, "brown"),
+    new Rectangle(150, 150, 50, 50, 120, "blue"),
+    new Rectangle(250, 250, 40, 40, 0, "lime"),
+  ];
+  #fruitsSpritesheet;
+  #animalsSpriteSheet;
 
-  constructor() {
-    this.#rectangles = [
-      new Rectangle(20, 10, 20, 20, 0, "black"),
-      new Rectangle(50, 50, 30, 20, 0, "brown"),
-      new Rectangle(150, 150, 50, 50, 120, "blue"),
-      new Rectangle(250, 250, 40, 40, 0, "lime"),
-    ];
-    this.#testingHud = new TestingHud();
+  constructor(game) {
+    this.#fruitsSpritesheet = new SpriteSheet(
+      game.content.getAsset("fruits"),
+      16
+    );
   }
   update(game) {
     this.#rectangles[2].rotationDeg--;
@@ -33,6 +39,15 @@ export default class TestingScene {
     this.#rectangles.forEach((element) => {
       element.draw(context);
     });
+
+    drawSprite(
+      context,
+      this.#fruitsSpritesheet,
+      0,
+      { x: 300, y: 300 },
+      false,
+      false
+    );
 
     this.#testingHud.draw(context);
   }

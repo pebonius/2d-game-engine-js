@@ -13,5 +13,4 @@ export default class SpriteSheet {
   tileToRow = (tile) => {
     return Math.floor(tile / this.tilesetWidthInTiles());
   };
-  load(tilesetData) {}
 }

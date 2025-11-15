@@ -1,7 +1,5 @@
 import {
   arrayContains,
-  checkForArray,
-  getPropertyByName,
   isBool,
   isFunction,
   isNonEmptyString,
@@ -15,8 +13,8 @@ export default class ContentManager {
   #loadingAllAssetsWasTriggered = false;
   #onFinishedLoading;
   #dataFilePath = "";
-  #imagesPath = "";
-  #images = [];
+  #imagesPath = "./assets/images/";
+  #images = ["animals", "fruits"];
   #soundsPath = "";
   #sounds = [];
   #musicTracksPath = "";
@@ -220,6 +218,16 @@ export default class ContentManager {
     );
   }
   getAsset(assetName) {
-    return getPropertyByName(assetName, this);
+    if (!assetName) {
+      throw new Error("property name was not defined");
+    }
+    if (typeof assetName !== "string") {
+      throw new Error("property name must be a string");
+    }
+    if (!this[assetName]) {
+      throw new Error(`property <<${assetName}>> not found`);
+    }
+
+    return this[assetName];
   }
 }

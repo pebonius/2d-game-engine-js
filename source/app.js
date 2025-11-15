@@ -4,8 +4,6 @@ import Debug from "./debug.js";
 import InputManager from "./input.js";
 import ContentManager from "./content.js";
 
-const testingScene = new TestingScene();
-
 export default class Game {
   constructor() {
     this.canvas = document.querySelector("#main-canvas");
@@ -14,12 +12,13 @@ export default class Game {
     this.input = new InputManager(this.canvas);
     this.content = new ContentManager();
     this.content.onFinishedLoading = () => {
-      this.start(testingScene);
+      this.start();
     };
     this.content.loadContent();
   }
-  start(scene) {
-    this.currentScene = scene;
+  start() {
+    const startingScene = new TestingScene(this);
+    this.currentScene = startingScene;
     this.running = true;
     this.gameLoop();
     Debug.log("game started");
