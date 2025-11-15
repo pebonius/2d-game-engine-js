@@ -22,17 +22,14 @@ export default class TestingScene {
       16
     );
 
-    this.#apple = new Sprite(
-      this.#fruitsSpritesheet,
-      12,
-      420,
-      140,
-      false,
-      false,
-      4,
-      4,
-      0
-    );
+    this.#apple = new Sprite(this.#fruitsSpritesheet, 12);
+    this.#apple.positionX = 400;
+    this.#apple.positionY = 250;
+    this.#apple.scaleX = 4;
+    this.#apple.scaleY = 4;
+    this.#apple.flipX = true;
+    this.#apple.flipY = true;
+    this.#apple.rotationDeg = 180;
   }
   update(game) {
     this.#rectangles[2].rotationDeg--;

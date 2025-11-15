@@ -60,7 +60,7 @@ export function rotateAroundCenter(
   const halfWidth = width * 0.5;
   const halfHeight = height * 0.5;
   context.translate(x + halfWidth, y + halfHeight);
-  context.rotate((rotationDegrees * Math.PI) / 180);
+  context.rotate((normalizeRotationDegrees(rotationDegrees) * Math.PI) / 180);
   context.translate(-x - halfWidth, -y - halfHeight);
 }
 
