@@ -64,6 +64,37 @@ export function rotateAroundCenter(
   context.translate(-x - halfWidth, -y - halfHeight);
 }
 
+export const drawSprite = (
+  context,
+  spriteSheet,
+  spriteIndex,
+  position,
+  flippedX = false,
+  flippedY = false
+) => {
+  context.save();
+  context.transform(
+    flippedX ? -1 : 1,
+    0,
+    0,
+    flippedY ? -1 : 1,
+    position.x + (flippedX ? spriteSheet.tileSize : 0),
+    position.y + (flippedY ? spriteSheet.tileSize : 0)
+  );
+  context.drawImage(
+    spriteSheet.image,
+    spriteSheet.tileToCol(spriteIndex) * spriteSheet.tileSize,
+    spriteSheet.tileToRow(spriteIndex) * spriteSheet.tileSize,
+    spriteSheet.tileSize,
+    spriteSheet.tileSize,
+    0,
+    0,
+    spriteSheet.tileSize,
+    spriteSheet.tileSize
+  );
+  context.restore();
+};
+
 export function getCanvasCenter(canvas) {
   return { x: canvas.width * 0.5, y: canvas.height * 0.5 };
 }
