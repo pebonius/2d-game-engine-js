@@ -1,4 +1,17 @@
+import { testTests } from "./unitTesting.test.js";
+import { graphicsTests } from "./graphics.test.js";
+
+let testsRan = 0;
+let testsFailed = 0;
+
+const testsToRun = [
+  { tests: testTests, name: "test tests" },
+  { tests: graphicsTests, name: "graphics tests" },
+];
+
 export function is(receivedValue, expectedValue) {
+  testsRan++;
+
   if (receivedValue === expectedValue) {
     console.log(
       `\t\texpected ${expectedValue}, received ${receivedValue} - OK 🟢`
@@ -36,6 +49,8 @@ export function areOutputs(valuesToTest, functionToTest, expectedValue) {
 }
 
 export function throws(functionToTest) {
+  testsRan++;
+
   try {
     functionToTest();
   } catch (error) {
@@ -48,6 +63,8 @@ export function throws(functionToTest) {
 }
 
 export function doesNotThrow(functionToTest) {
+  testsRan++;
+
   try {
     functionToTest();
   } catch (error) {
@@ -58,3 +75,18 @@ export function doesNotThrow(functionToTest) {
   console.log(`\t\tdid not throw error - OK 🟢`);
   return true;
 }
+
+function runTests() {
+  testsToRun.forEach((testSuite) => {
+    console.log(`running ${testSuite.name}`);
+    testSuite.tests.forEach((test) => {
+      console.log(`\trunning ${test.name}...`);
+      test();
+      console.log(`\t${test.name} completed`);
+    });
+  });
+  console.log(`total tests ran: ${testsRan}`);
+  console.log(`tests failed: ${testsFailed}`);
+}
+
+runTests();

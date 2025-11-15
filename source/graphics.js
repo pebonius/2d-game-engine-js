@@ -23,6 +23,10 @@ export function clearContext(context) {
 }
 
 export function normalizeRotationDegrees(degrees) {
+  if (!Number.isInteger(degrees)) {
+    throw new Error("degrees must be an integer")
+  }
+
   let normalizedRotation = degrees % 360;
 
   if (normalizedRotation < 0) {
