@@ -64,15 +64,19 @@ export function rotateAroundCenter(
   context.translate(-x - halfWidth, -y - halfHeight);
 }
 
-export const drawSprite = (
+export const drawSpriteFromSheet = (
   context,
   spriteSheet,
   spriteIndex,
   position,
   flippedX = false,
-  flippedY = false
+  flippedY = false,
+  scaleX = 1,
+  scaleY = 1,
+  rotateDeg = 0
 ) => {
   context.save();
+  context.fillStyle = "white";
   context.transform(
     flippedX ? -1 : 1,
     0,
@@ -80,6 +84,15 @@ export const drawSprite = (
     flippedY ? -1 : 1,
     position.x + (flippedX ? spriteSheet.tileSize : 0),
     position.y + (flippedY ? spriteSheet.tileSize : 0)
+  );
+  context.scale(scaleX, scaleY);
+  rotateAroundCenter(
+    context,
+    0,
+    0,
+    spriteSheet.tileSize,
+    spriteSheet.tileSize,
+    rotateDeg
   );
   context.drawImage(
     spriteSheet.image,
