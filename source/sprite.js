@@ -118,22 +118,6 @@ export default class Sprite {
     this.#rotationDeg = value;
   }
   draw(context) {
-    if (!this.spriteSheet) {
-      throw new Error("spritesheet was not defined");
-    }
-    if (!this.spriteIndex) {
-      throw new Error("sprite index was not defined");
-    }
-    if (!this.positionX || !this.positionY) {
-      throw new Error("position was not defined");
-    }
-    if (!this.scaleX || !this.scaleY) {
-      throw new Error("scale was not defined");
-    }
-    if (!this.rotationDeg) {
-      throw new Error("scale was not defined");
-    }
-
     drawSpriteFromSheet(
       context,
       this.#spriteSheet,

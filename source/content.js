@@ -14,7 +14,7 @@ export default class ContentManager {
   #onFinishedLoading;
   #dataFilePath = "";
   #imagesPath = "./assets/images/";
-  #images = ["animals", "fruits"];
+  #images = ["ufeff", "fruits"];
   #soundsPath = "";
   #sounds = [];
   #musicTracksPath = "";

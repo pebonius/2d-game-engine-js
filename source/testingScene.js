@@ -14,7 +14,8 @@ export default class TestingScene {
   ];
   #fruitsSpritesheet;
   #apple;
-  #animalsSpriteSheet;
+  #ufeffSpritesheet;
+  #something;
 
   constructor(game) {
     this.#fruitsSpritesheet = new SpriteSheet(
@@ -30,6 +31,17 @@ export default class TestingScene {
     this.#apple.flipX = true;
     this.#apple.flipY = true;
     this.#apple.rotationDeg = 180;
+
+    this.#ufeffSpritesheet = new SpriteSheet(
+      game.content.getAsset("ufeff"),
+      16
+    );
+
+    this.#something = new Sprite(this.#ufeffSpritesheet, 32);
+    this.#something.positionX = 400;
+    this.#something.positionY = 300;
+    this.#something.scaleX = 8;
+    this.#something.scaleY = 8;
   }
   update(game) {
     this.#rectangles[2].rotationDeg--;
@@ -51,6 +63,7 @@ export default class TestingScene {
     });
 
     this.#apple.draw(context);
+    this.#something.draw(context);
 
     this.#testingHud.draw(context);
   }
