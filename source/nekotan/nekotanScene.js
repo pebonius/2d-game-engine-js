@@ -2,18 +2,23 @@ import Debug from "../debug.js";
 import TestingHud from "../testingHud.js";
 import SpriteSheet from "../spriteSheet.js";
 import Sprite from "../sprite.js";
-import Apple from "./apple.js";
-import TestingScenePhysics from "./testingScenePhysics.js";
+import Food from "./food.js";
+import nekotanPhysics from "./nekotanPhysics.js";
+import Nekotan from "./nekotan.js";
+import { drawText, getCanvasCenter } from "../graphics.js";
 
-export default class TestingScene {
+export default class NekotanScene {
   #testingHud = new TestingHud();
   #fruitsSpritesheet;
   #ufeffSpritesheet;
-  #neko;
+  #nekotan;
   #apples = [];
-  #physics = new TestingScenePhysics();
+  #physics = new nekotanPhysics();
+  #foodEaten = 0;
 
   constructor(game) {
+    this.game = game;
+
     this.#fruitsSpritesheet = new SpriteSheet(
       game.content.getAsset("fruits"),
       16
@@ -24,21 +29,27 @@ export default class TestingScene {
       16
     );
 
-    this.#neko = new Sprite(this.#ufeffSpritesheet, 32);
-    this.#neko.positionX = 400;
-    this.#neko.positionY = 300;
-    this.#neko.scaleX = 8;
-    this.#neko.scaleY = 8;
+    this.#nekotan = new Nekotan(
+      this,
+      getCanvasCenter(game.canvas).x - 32,
+      getCanvasCenter(game.canvas).y - 32
+    );
   }
   get fruitsSpritesheet() {
     return this.#fruitsSpritesheet;
   }
+  get ufeffSpritesheet() {
+    return this.#ufeffSpritesheet;
+  }
+  get physics() {
+    return this.#physics;
+  }
   update(game) {
     this.#apples.forEach((element) => {
-      this.#physics.applyGravity(element, game.canvas);
-      this.#physics.applyDamping(element, game.canvas);
       element.update(this);
     });
+
+    this.#nekotan.update(this);
 
     this.#testingHud.update(game);
 
@@ -50,20 +61,21 @@ export default class TestingScene {
     }
   }
   onViewportClick(game) {
-    this.#apples.push(
-      new Apple(
-        this,
-        game.input.pointerPosition.x,
-        game.input.pointerPosition.y
-      )
-    );
+    const posX =
+      game.input.pointerPosition.x > game.canvas.width - 64
+        ? game.canvas.width - 64
+        : game.input.pointerPosition.x;
+
+    this.#apples.push(new Food(this, posX, game.input.pointerPosition.y));
   }
   draw(context) {
     this.#apples.forEach((element) => {
       element.draw(context);
     });
 
-    this.#neko.draw(context);
+    this.#nekotan.draw(context);
+
+    drawText(context, `food consumed: ${this.#foodEaten}`, 32, "lime", 32, 32);
 
     this.#testingHud.draw(context);
   }

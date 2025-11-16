@@ -1,5 +1,5 @@
 import { clearContext } from "./graphics.js";
-import TestingScene from "./testingScene/testingScene.js";
+import NekotanScene from "./nekotan/nekotanScene.js";
 import Debug from "./debug.js";
 import InputManager from "./input.js";
 import ContentManager from "./content.js";
@@ -17,7 +17,7 @@ export default class Game {
     this.content.loadContent();
   }
   start() {
-    const startingScene = new TestingScene(this);
+    const startingScene = new NekotanScene(this);
     this.currentScene = startingScene;
     this.running = true;
     this.gameLoop();

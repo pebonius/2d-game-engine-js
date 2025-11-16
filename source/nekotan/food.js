@@ -1,7 +1,7 @@
 import Body from "../body.js";
 import Sprite from "../sprite.js";
 
-export default class Apple {
+export default class Food {
   constructor(scene, positionX, positionY) {
     this.body = new Body();
     this.positionX = positionX;
@@ -51,6 +51,9 @@ export default class Apple {
     this.body.height = value;
   }
   update(scene) {
+    scene.physics.applyGravity(this, scene.game.canvas);
+    scene.physics.applyDamping(this);
+    scene.physics.floorDelta(this);
     this.body.update(scene);
     this.sprite.positionX = this.positionX;
     this.sprite.positionY = this.positionY;

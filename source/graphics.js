@@ -86,8 +86,8 @@ export const drawSpriteFromSheet = (
     0,
     0,
     flippedY ? -1 : 1,
-    position.x + (flippedX ? spriteSheet.tileSize : 0),
-    position.y + (flippedY ? spriteSheet.tileSize : 0)
+    position.x + (flippedX ? spriteSheet.tileSize * scaleX : 0),
+    position.y + (flippedY ? spriteSheet.tileSize * scaleY : 0)
   );
   context.scale(scaleX, scaleY);
   rotateAroundCenter(

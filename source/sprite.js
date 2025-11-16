@@ -13,13 +13,20 @@ export default class Sprite {
 
   constructor(spriteSheet, spriteIndex) {
     this.#spriteSheet = spriteSheet;
-    this.#spriteIndex = spriteIndex;
+    this.spriteIndex = spriteIndex;
   }
   get spriteSheet() {
     return this.#spriteSheet;
   }
   get spriteIndex() {
     return this.#spriteIndex;
+  }
+  set spriteIndex(value) {
+    if (!Number.isInteger(value)) {
+      throw new Error("value must be a safe integer");
+    }
+
+    this.#spriteIndex = value;
   }
   get positionX() {
     return this.#positionX;
