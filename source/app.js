@@ -1,5 +1,5 @@
 import { clearContext } from "./graphics.js";
-import TestingScene from "./testingScene.js";
+import TestingScene from "./testingScene/testingScene.js";
 import Debug from "./debug.js";
 import InputManager from "./input.js";
 import ContentManager from "./content.js";
