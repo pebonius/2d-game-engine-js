@@ -13,11 +13,13 @@ export default class NekotanScene {
   #fruitsSpritesheet;
   #ufeffSpritesheet;
   #nekotan;
-  #foods = [];
+  #foods;
   #physics = new nekotanPhysics();
-  #foodEaten = 0;
+  #foodEaten;
   #growthDelay = 10;
-  #gameOver = false;
+  #gameOver;
+  #restartTimer;
+  #restartDelay;
 
   constructor(game) {
     this.game = game;
@@ -32,11 +34,19 @@ export default class NekotanScene {
       16
     );
 
+    this.start();
+  }
+  start() {
     this.#nekotan = new Nekotan(
       this,
-      getCanvasCenter(game.canvas).x - 32,
-      getCanvasCenter(game.canvas).y - 32
+      getCanvasCenter(this.game.canvas).x - 32,
+      getCanvasCenter(this.game.canvas).y - 32
     );
+    this.#foods = [];
+    this.#foodEaten = 0;
+    this.#gameOver = false;
+    this.#restartTimer = 0;
+    this.#restartDelay = 240;
   }
   get fruitsSpritesheet() {
     return this.#fruitsSpritesheet;
@@ -60,9 +70,19 @@ export default class NekotanScene {
 
     this.#testingHud.update(game);
 
-    if (!this.#gameOver) {
-      this.handlePointerInput(game);
+    this.handlePointerInput(game);
+
+    if (this.#gameOver) {
+      this.updateRestartTimer();
     }
+  }
+  updateRestartTimer() {
+    if (this.#restartTimer < this.#restartDelay) {
+      this.#restartTimer++;
+      return;
+    }
+
+    this.start();
   }
   detectFoodCollision(food) {
     const nekotanPosition = {
@@ -81,7 +101,6 @@ export default class NekotanScene {
       this.eatFood(food);
     }
   }
-
   eatFood(food) {
     food.isDead = true;
     this.#foodEaten++;
@@ -100,6 +119,10 @@ export default class NekotanScene {
     }
   }
   onViewportClick(game) {
+    if (this.#gameOver) {
+      return;
+    }
+
     const posX =
       game.input.pointerPosition.x > game.canvas.width - 64
         ? game.canvas.width - 64

@@ -5,6 +5,9 @@ import InputManager from "./input.js";
 import ContentManager from "./content.js";
 
 export default class Game {
+  #lastUpdateTime = Date.now();
+  #updateRate = 15;
+
   constructor() {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
@@ -37,7 +40,13 @@ export default class Game {
     }
   }
   update(scene) {
+    if (Date.now() < this.#lastUpdateTime + this.#updateRate) {
+      return;
+    }
+
     scene.update(this);
+
+    this.#lastUpdateTime = Date.now();
   }
   draw(scene) {
     clearContext(this.context);
