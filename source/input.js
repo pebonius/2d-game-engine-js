@@ -168,8 +168,8 @@ export default class InputManager {
     });
     this.canvas.addEventListener("pointermove", (e) => {
       this.#pointerPosition = {
-        x: this.checkPointerPosition(e).x,
-        y: this.checkPointerPosition(e).y,
+        x: Math.floor(this.checkPointerPosition(e).x),
+        y: Math.floor(this.checkPointerPosition(e).y),
       };
     });
     this.canvas.addEventListener("pointerleave", (e) => {

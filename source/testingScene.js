@@ -15,7 +15,7 @@ export default class TestingScene {
   #fruitsSpritesheet;
   #apple;
   #ufeffSpritesheet;
-  #something;
+  #neko;
 
   constructor(game) {
     this.#fruitsSpritesheet = new SpriteSheet(
@@ -37,11 +37,11 @@ export default class TestingScene {
       16
     );
 
-    this.#something = new Sprite(this.#ufeffSpritesheet, 32);
-    this.#something.positionX = 400;
-    this.#something.positionY = 300;
-    this.#something.scaleX = 8;
-    this.#something.scaleY = 8;
+    this.#neko = new Sprite(this.#ufeffSpritesheet, 32);
+    this.#neko.positionX = 400;
+    this.#neko.positionY = 300;
+    this.#neko.scaleX = 8;
+    this.#neko.scaleY = 8;
   }
   update(game) {
     this.#rectangles[2].rotationDeg--;
@@ -56,6 +56,25 @@ export default class TestingScene {
     }
 
     this.#testingHud.update(game);
+
+    this.handlePointerInput(game);
+  }
+  handlePointerInput(game) {
+    if (game.input.isClick()) {
+      this.onViewportClick(game);
+    }
+  }
+  onViewportClick(game) {
+    this.#rectangles.push(
+      new Rectangle(
+        game.input.pointerPosition.x,
+        game.input.pointerPosition.y,
+        32,
+        32,
+        0,
+        "yellow"
+      )
+    );
   }
   draw(context) {
     this.#rectangles.forEach((element) => {
@@ -63,7 +82,7 @@ export default class TestingScene {
     });
 
     this.#apple.draw(context);
-    this.#something.draw(context);
+    this.#neko.draw(context);
 
     this.#testingHud.draw(context);
   }
