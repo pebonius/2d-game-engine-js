@@ -173,14 +173,14 @@ export const hasValue = (object, checkedValue) => {
 };
 
 export const removeDead = (array) => {
-  if (Array.isArray(array)) {
-    for (let i = array.length - 1; i > -1; i--) {
-      if (array[i].isDead) {
-        array.splice(i, 1);
-      }
+  if (!Array.isArray(array)) {
+    throw TypeError("array must be an array duh");
+  }
+
+  for (let i = array.length - 1; i > -1; i--) {
+    if (array[i].isDead) {
+      array.splice(i, 1);
     }
-  } else {
-    throw TypeError("Can only remove dead objects from array.");
   }
 };
 

@@ -2,12 +2,9 @@
 
 todo:
 
-- nekotan walk cycle animation
-- nekotan walks left and right
-- nekotan jumps at random
-- nekotan eats food
+- nekotan walk cycle animation - DONE
+- nekotan walks left and right - DONE
+- nekotan eats food - DONE
 - nekotan eats food with a chomp
-- when nekotan eats food, she grows
-- nekotan walks towards first food in food array
-- nekotan jumps if target food is still in the air
+- when nekotan eats food, she grows - DONE
 - background
