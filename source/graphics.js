@@ -1,4 +1,4 @@
-export const defaultFont = "Courier New";
+export const defaultFont = "Arial";
 
 export const drawText = (
   context,

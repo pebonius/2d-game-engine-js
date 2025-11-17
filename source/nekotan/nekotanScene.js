@@ -109,12 +109,12 @@ export default class NekotanScene {
   detectFoodCollision(food) {
     const nekotanPosition = {
       x: this.#nekotan.positionX + this.#nekotan.width * 0.5,
-      y: this.#nekotan.positionY + this.#nekotan.height * 0.5,
+      y: this.#nekotan.positionY + this.#nekotan.height,
     };
 
     const foodPosition = {
       x: food.positionX + food.width * 0.5,
-      y: food.positionY + food.height * 0.5,
+      y: food.positionY + food.height,
     };
 
     const eatDistance = this.#nekotan.width * 0.5;
@@ -171,19 +171,30 @@ export default class NekotanScene {
   drawGameOverText(context) {
     drawText(
       context,
-      `this world can't`,
+      `this world cannot`,
       64,
       "yellow",
       16,
       getCanvasCenter(context.canvas).y - 60
     );
+
     drawText(
       context,
       `contain me`,
       64,
-      "yellow",
+      "red",
       16,
       getCanvasCenter(context.canvas).y
+    );
+
+    const textOffset = 3;
+    drawText(
+      context,
+      `contain me`,
+      64,
+      "orange",
+      16 + textOffset,
+      getCanvasCenter(context.canvas).y + textOffset
     );
   }
   drawFoodEatenString(context) {
