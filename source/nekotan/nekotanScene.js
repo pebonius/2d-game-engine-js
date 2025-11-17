@@ -98,7 +98,7 @@ export default class NekotanScene {
       this.updateRestartTimer();
     }
 
-    if (isRunningLocally) {
+    if (isRunningLocally()) {
       this.#testingHud.update(game);
     }
   }
@@ -176,7 +176,7 @@ export default class NekotanScene {
 
     this.drawFoodEatenString(context);
 
-    if (isRunningLocally) {
+    if (isRunningLocally()) {
       this.#testingHud.draw(context);
     }
   }
