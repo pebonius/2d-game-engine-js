@@ -6,7 +6,7 @@ import Food from "./food.js";
 import nekotanPhysics from "./nekotanPhysics.js";
 import Nekotan from "./nekotan.js";
 import { distance, drawText, getCanvasCenter } from "../graphics.js";
-import { removeDead } from "../utilities.js";
+import { isRunningLocally, removeDead } from "../utilities.js";
 
 export default class NekotanScene {
   #testingHud = new TestingHud();
@@ -44,8 +44,8 @@ export default class NekotanScene {
   start() {
     this.#nekotan = new Nekotan(
       this,
-      getCanvasCenter(this.game.canvas).x - 32,
-      getCanvasCenter(this.game.canvas).y - 32
+      getCanvasCenter(this.game.canvas).x - this.game.canvas.width * 0.05,
+      getCanvasCenter(this.game.canvas).y - this.game.canvas.width * 0.05
     );
     this.#foods = [];
     this.#foodEaten = 0;
@@ -97,6 +97,10 @@ export default class NekotanScene {
     if (this.#gameOver) {
       this.updateRestartTimer();
     }
+
+    if (isRunningLocally) {
+      this.#testingHud.update(game);
+    }
   }
   updateRestartTimer() {
     if (this.#restartTimer < this.#restartDelay) {
@@ -147,12 +151,16 @@ export default class NekotanScene {
       return;
     }
 
+    const newFood = new Food(this, 0, game.input.pointerPosition.y);
+
     const posX =
-      game.input.pointerPosition.x > game.canvas.width - 64
-        ? game.canvas.width - 64
+      game.input.pointerPosition.x > game.canvas.width - newFood.width
+        ? game.canvas.width - newFood.width
         : game.input.pointerPosition.x;
 
-    this.#foods.push(new Food(this, posX, game.input.pointerPosition.y));
+    newFood.positionX = posX;
+
+    this.#foods.push(newFood);
   }
   draw(context) {
     if (this.#gameOver) {
@@ -167,23 +175,27 @@ export default class NekotanScene {
     this.drawFood(context);
 
     this.drawFoodEatenString(context);
+
+    if (isRunningLocally) {
+      this.#testingHud.draw(context);
+    }
   }
   drawGameOverText(context) {
     drawText(
       context,
       `this world cannot`,
-      64,
+      this.game.canvas.width * 0.1,
       "yellow",
       16,
-      getCanvasCenter(context.canvas).y - 60
+      getCanvasCenter(context.canvas).y - this.game.canvas.width * 0.1
     );
 
     drawText(
       context,
       `contain me`,
-      64,
+      this.game.canvas.width * 0.1,
       "red",
-      16,
+      this.game.canvas.width * 0.025,
       getCanvasCenter(context.canvas).y
     );
 
@@ -191,7 +203,7 @@ export default class NekotanScene {
     drawText(
       context,
       `contain me`,
-      64,
+      this.game.canvas.width * 0.1,
       "orange",
       16 + textOffset,
       getCanvasCenter(context.canvas).y + textOffset
@@ -205,10 +217,10 @@ export default class NekotanScene {
     drawText(
       context,
       `food consumed: ${this.#foodEaten}`,
-      32 + this.#foodEaten * 0.1,
+      this.game.canvas.width * 0.05 + this.#foodEaten * 0.1,
       foodStringColor,
-      32,
-      32
+      this.game.canvas.width * 0.05,
+      this.game.canvas.width * 0.05
     );
   }
   drawNekotan(context) {

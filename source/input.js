@@ -211,7 +211,13 @@ export default class InputManager {
     return this.#currentKeysDown[key];
   }
   checkPointerPosition(e) {
-    const rect = this.canvas.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    const canvasActualWidth = this.canvas.getBoundingClientRect().width;
+    const canvasOriginalWidth = this.canvas.width;
+    const rescaleRatio = canvasActualWidth / canvasOriginalWidth;
+    const rect = e.target.getBoundingClientRect();
+    return {
+      x: e.clientX / rescaleRatio - rect.left,
+      y: e.clientY / rescaleRatio - rect.top,
+    };
   }
 }
