@@ -14,15 +14,19 @@ export default class NekotanScene {
   #ufeffSpritesheet;
   #nekotan;
   #foods;
-  #physics = new nekotanPhysics();
+  #physics;
   #foodEaten;
   #growthDelay = 10;
   #gameOver;
   #restartTimer;
   #restartDelay;
+  #crunch1;
+  #groundTiles;
 
   constructor(game) {
     this.game = game;
+
+    this.#physics = new nekotanPhysics(this);
 
     this.#fruitsSpritesheet = new SpriteSheet(
       game.content.getAsset("fruits"),
@@ -34,6 +38,7 @@ export default class NekotanScene {
       16
     );
 
+    this.#crunch1 = game.content.getAsset("crunch1");
     this.start();
   }
   start() {
@@ -47,7 +52,26 @@ export default class NekotanScene {
     this.#gameOver = false;
     this.#restartTimer = 0;
     this.#restartDelay = 240;
+
+    this.createGroundTiles();
   }
+  createGroundTiles() {
+    this.#groundTiles = [];
+    const groundScale = 4;
+    const groundTileIndex = 128;
+
+    for (let index = 0; index < 10; index++) {
+      const newTile = new Sprite(this.#ufeffSpritesheet, groundTileIndex);
+      newTile.positionX = index * this.#ufeffSpritesheet.tileSize * groundScale;
+      newTile.positionY =
+        this.game.canvas.height - this.#ufeffSpritesheet.tileSize * groundScale;
+      newTile.scaleX = groundScale;
+      newTile.scaleY = groundScale;
+
+      this.#groundTiles.push(newTile);
+    }
+  }
+
   get fruitsSpritesheet() {
     return this.#fruitsSpritesheet;
   }
@@ -67,8 +91,6 @@ export default class NekotanScene {
     });
 
     this.#nekotan.update(this);
-
-    this.#testingHud.update(game);
 
     this.handlePointerInput(game);
 
@@ -112,6 +134,8 @@ export default class NekotanScene {
     if (this.#nekotan.width >= this.game.canvas.width) {
       this.#gameOver = true;
     }
+
+    this.game.sound.playSoundEffect(this.#crunch1);
   }
   handlePointerInput(game) {
     if (game.input.isClick()) {
@@ -132,32 +156,40 @@ export default class NekotanScene {
   }
   draw(context) {
     if (this.#gameOver) {
-      drawText(
-        context,
-        `this world can't`,
-        64,
-        "orange",
-        16,
-        getCanvasCenter(context.canvas).y - 60
-      );
-      drawText(
-        context,
-        `contain me`,
-        64,
-        "orange",
-        16,
-        getCanvasCenter(context.canvas).y
-      );
+      this.drawGameOverText(context);
       return;
     }
 
-    this.#nekotan.draw(context);
+    this.drawGround(context);
 
-    this.#foods.forEach((element) => {
-      element.draw(context);
-    });
+    this.drawNekotan(context);
 
-    const foodStringColor = `rgb(${this.#foodEaten}, 225, 0)`;
+    this.drawFood(context);
+
+    this.drawFoodEatenString(context);
+  }
+  drawGameOverText(context) {
+    drawText(
+      context,
+      `this world can't`,
+      64,
+      "yellow",
+      16,
+      getCanvasCenter(context.canvas).y - 60
+    );
+    drawText(
+      context,
+      `contain me`,
+      64,
+      "yellow",
+      16,
+      getCanvasCenter(context.canvas).y
+    );
+  }
+  drawFoodEatenString(context) {
+    const foodStringColor = `rgb(225, ${225 - this.#foodEaten * 0.5},${
+      225 - this.#foodEaten
+    })`;
 
     drawText(
       context,
@@ -167,7 +199,18 @@ export default class NekotanScene {
       32,
       32
     );
-
-    this.#testingHud.draw(context);
+  }
+  drawNekotan(context) {
+    this.#nekotan.draw(context);
+  }
+  drawFood(context) {
+    this.#foods.forEach((element) => {
+      element.draw(context);
+    });
+  }
+  drawGround(context) {
+    this.#groundTiles.forEach((element) => {
+      element.draw(context);
+    });
   }
 }

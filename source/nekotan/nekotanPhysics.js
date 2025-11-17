@@ -2,16 +2,20 @@ export default class nekotanPhysics {
   #forceOfGravity = 0.8;
   #damping = 0.95;
   #minDelta = 0.1;
+  #groundHeight;
 
-  constructor() {}
+  constructor(scene) {
+    this.canvas = scene.game.canvas;
+    this.#groundHeight = this.canvas.height - 64;
+  }
   objectiveVelocity(delta) {
     const pow = Math.pow(delta, 2);
     const sqrt = Math.sqrt(pow);
     return sqrt;
   }
   applyGravity(physicalObject, canvas) {
-    if (physicalObject.positionY + physicalObject.height >= canvas.height) {
-      physicalObject.positionY = canvas.height - physicalObject.height;
+    if (physicalObject.positionY + physicalObject.height >= this.#groundHeight) {
+      physicalObject.positionY = this.#groundHeight - physicalObject.height;
       physicalObject.deltaY = 0;
       return;
     }

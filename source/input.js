@@ -167,16 +167,23 @@ export default class InputManager {
       this.consumeClick();
     });
     this.canvas.addEventListener("pointermove", (e) => {
-      this.#pointerPosition = {
-        x: Math.floor(this.checkPointerPosition(e).x),
-        y: Math.floor(this.checkPointerPosition(e).y),
-      };
+      this.cachePointerPosition(e);
     });
     this.canvas.addEventListener("pointerleave", (e) => {
       this.#pointerPosition = null;
     });
   }
+  cachePointerPosition(e) {
+    this.#pointerPosition = {
+      x: Math.floor(this.checkPointerPosition(e).x),
+      y: Math.floor(this.checkPointerPosition(e).y),
+    };
+  }
   isClick() {
+    if (!this.pointerPosition) {
+      return false;
+    }
+
     const click = this.isclick;
     this.consumeClick();
     return click;

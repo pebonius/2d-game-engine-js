@@ -3,6 +3,7 @@ import NekotanScene from "./nekotan/nekotanScene.js";
 import Debug from "./debug.js";
 import InputManager from "./input.js";
 import ContentManager from "./content.js";
+import SoundManager from "./sound.js";
 
 export default class Game {
   #lastUpdateTime = Date.now();
@@ -14,6 +15,7 @@ export default class Game {
     this.context.imageSmoothingEnabled = false;
     this.input = new InputManager(this.canvas);
     this.content = new ContentManager();
+    this.sound = new SoundManager();
     this.content.onFinishedLoading = () => {
       this.start();
     };
