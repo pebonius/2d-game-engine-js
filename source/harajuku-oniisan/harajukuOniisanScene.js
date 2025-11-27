@@ -1,11 +1,6 @@
 import { distance, drawText } from "../graphics.js";
 import SpriteSheet from "../spriteSheet.js";
-import {
-  cloneArray,
-  passPercentileRoll,
-  randomNumber,
-  removeDead,
-} from "../utilities.js";
+import { passPercentileRoll, randomNumber, removeDead } from "../utilities.js";
 import Cow from "./cow.js";
 import Oniisan from "./oniisan.js";
 import TileMap from "./tileMap.js";
@@ -22,6 +17,8 @@ export default class HarajukuOniisanScene {
   #gameOver;
   #gameOverTime;
   #restartDelay = 1000;
+  #musicDelay = 2000;
+  #musicStarted = false;
 
   constructor(game) {
     this.game = game;
@@ -31,6 +28,8 @@ export default class HarajukuOniisanScene {
     this.start(game);
   }
   start(game) {
+    this.gameStartTime = Date.now();
+    this.#musicStarted = false;
     this.map = new TileMap(this.#tileset);
 
     const oniisanOffset = 28;
@@ -55,6 +54,14 @@ export default class HarajukuOniisanScene {
     this.#lastLifeDecreaseTime = Date.now();
   }
   update(game) {
+    if (
+      !this.#musicStarted &&
+      Date.now() - this.gameStartTime > this.#musicDelay
+    ) {
+      this.#musicStarted = true;
+      game.sound.playMusic(game.content.crazycow, true);
+    }
+
     if (!this.#gameOver) {
       this.oniisan.update(game, this);
       this.updateBullets(game);
@@ -90,10 +97,10 @@ export default class HarajukuOniisanScene {
     this.#cows.forEach((cow) => {
       cow.update(game, scene);
       this.checkCowlisionWithOniisan(cow);
-      this.checkCowlisionWithBullets(cow);
+      this.checkCowlisionWithBullets(cow, game);
     });
   }
-  checkCowlisionWithBullets(cow) {
+  checkCowlisionWithBullets(cow, game) {
     this.bullets.forEach((bullet) => {
       if (!bullet.isDead) {
         const bulletMiddle = {
@@ -109,20 +116,25 @@ export default class HarajukuOniisanScene {
         const collisionDistance = 40;
 
         if (distance(bulletMiddle, cowMiddle) < collisionDistance) {
-          this.collideWithBullet(cow, bullet);
+          this.collideWithBullet(cow, bullet, game);
         }
       }
     });
   }
-  collideWithBullet(cow, bullet) {
+  collideWithBullet(cow, bullet, game) {
     bullet.isDead = true;
 
     this.#points++;
     cow.life--;
 
+    this.killCow(cow, game);
+  }
+  killCow(cow, game) {
     if (cow.life <= 0) {
       cow.isDead = true;
       this.#points += 10;
+
+      game.sound.playSoundEffect(game.content.kaboom);
     }
   }
   checkCowlisionWithOniisan(cow) {
@@ -170,6 +182,8 @@ export default class HarajukuOniisanScene {
     const posY = randomNumber(0, game.canvas.height);
 
     this.#cows.push(new Cow(posX, posY, this.#cowSpritesheet));
+
+    game.sound.playSoundEffect(game.content.cowmoo);
   }
   draw(context) {
     this.map.draw(context);
