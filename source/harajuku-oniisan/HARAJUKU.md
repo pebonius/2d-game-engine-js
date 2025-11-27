@@ -16,9 +16,12 @@ play as harajuku oniisan, defend the city from cows and like get as many points 
 - DONE getting points
 - DONE cow goes moo when spawning
 - DONE cow goes kaboom when dying
+- DONE add little bullet explosions
 - oniisan goes argh when getting chewed
+- oniisan blinks when unchewable
 - cows can become enraged when you kill a cow
-- englitchify
+- other types of cows?
+- death animation?
 
 ## credits
 
@@ -34,4 +37,6 @@ cow sound by AntumDeluge from OGA (https://opengameart.org/content/yak-imitation
 
 explosion sound by crazyduckgames from OGA (https://opengameart.org/content/soundpack-03), licensed under CC0
 
-music by iamoneabe from OGA (https://opengameart.org/content/crazy-cow), licensed under CC0
+"crazy cow" track by iamoneabe from OGA (https://opengameart.org/content/crazy-cow), licensed under CC0
+
+"suspended animation" track by congusbongus on OGA (https://opengameart.org/content/suspended-animation) licensed under CC-BY 4.0

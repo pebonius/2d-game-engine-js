@@ -18,7 +18,7 @@ export default class ContentManager {
   #soundsPath = "./source/harajuku-oniisan/assets/";
   #sounds = ["cowmoo", "kaboom"];
   #musicTracksPath = "./source/harajuku-oniisan/assets/";
-  #musicTracks = ["crazycow"];
+  #musicTracks = ["crazycow", "loop"];
 
   constructor() {}
   get assetsCurrentlyLoading() {

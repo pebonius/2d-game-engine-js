@@ -1,7 +1,8 @@
-import { distance, drawText } from "../graphics.js";
+import { distance, drawRectangle, drawText } from "../graphics.js";
 import SpriteSheet from "../spriteSheet.js";
 import { passPercentileRoll, randomNumber, removeDead } from "../utilities.js";
 import Cow from "./cow.js";
+import Explosion from "./explosion.js";
 import Oniisan from "./oniisan.js";
 import TileMap from "./tileMap.js";
 
@@ -16,14 +17,16 @@ export default class HarajukuOniisanScene {
   #lifeDecreaseDelay = 1000;
   #gameOver;
   #gameOverTime;
-  #restartDelay = 1000;
+  #restartDelay = 2000;
   #musicDelay = 2000;
   #musicStarted = false;
+  #explosions;
 
   constructor(game) {
     this.game = game;
     this.#oniisanSpritesheet = new SpriteSheet(game.content.oniisan, 28);
     this.#cowSpritesheet = new SpriteSheet(game.content.cow, 128);
+    this.#explosionSpritesheet = new SpriteSheet(game.content.explosion, 20);
     this.#tileset = new SpriteSheet(game.content.tileset, 16);
     this.start(game);
   }
@@ -51,6 +54,8 @@ export default class HarajukuOniisanScene {
     this.bullets = [];
     this.maxBullets = 3;
 
+    this.#explosions = [];
+
     this.#lastLifeDecreaseTime = Date.now();
   }
   update(game) {
@@ -65,16 +70,24 @@ export default class HarajukuOniisanScene {
     if (!this.#gameOver) {
       this.oniisan.update(game, this);
       this.updateBullets(game);
+      this.updateExplosions(game);
       this.updateCows(game, this);
       this.spawnCows(game);
     }
 
     if (!this.#gameOver && this.oniisan.life <= 0) {
       this.#gameOver = true;
+      game.sound.playMusic(game.content.loop, true);
       this.#gameOverTime = Date.now();
     }
 
     this.checkForRestart(game);
+  }
+  updateExplosions(game) {
+    removeDead(this.#explosions);
+    this.#explosions.forEach((explosion) => {
+      explosion.update(game);
+    });
   }
   updateBullets(game) {
     removeDead(this.bullets);
@@ -90,6 +103,7 @@ export default class HarajukuOniisanScene {
       game.input.isKeyPressed(game.input.keys.Z)
     ) {
       this.start(this.game);
+      game.sound.playMusic(game.content.crazycow, true);
     }
   }
   updateCows(game, scene) {
@@ -123,11 +137,21 @@ export default class HarajukuOniisanScene {
   }
   collideWithBullet(cow, bullet, game) {
     bullet.isDead = true;
+    this.addExplosion(bullet);
 
     this.#points++;
     cow.life--;
 
     this.killCow(cow, game);
+  }
+  addExplosion(bullet) {
+    this.#explosions.push(
+      new Explosion(
+        bullet.positionX - 10,
+        bullet.positionY - 10,
+        this.#explosionSpritesheet
+      )
+    );
   }
   killCow(cow, game) {
     if (cow.life <= 0) {
@@ -188,6 +212,7 @@ export default class HarajukuOniisanScene {
   draw(context) {
     this.map.draw(context);
     this.drawSprites(context);
+    this.drawExplosions(context);
     this.drawLife(context);
     this.drawPoints(context);
     this.drawGameOverText(context);
@@ -201,6 +226,11 @@ export default class HarajukuOniisanScene {
       sprite.draw(context);
     });
   }
+  drawExplosions(context) {
+    this.#explosions.forEach((explosion) => {
+      explosion.draw(context);
+    });
+  }
   drawLife(context) {
     drawText(context, `LIFE: ${this.oniisan.life}`, 32, "white", 30, 30);
   }
@@ -211,10 +241,21 @@ export default class HarajukuOniisanScene {
     if (!this.#gameOver) {
       return;
     }
+
+    drawRectangle(
+      context,
+      0,
+      0,
+      context.canvas.width,
+      context.canvas.height,
+      0,
+      "rgba(0, 0, 0, 0.5"
+    );
+
     const gameOverMessage = "GOODNIGHT ONIISAN";
     const gameOverMessageFontSize = 32;
-    const gameOverMessageX = 180;
-    const gameOverMessageY = 200;
+    const gameOverMessageX = 160;
+    const gameOverMessageY = 160;
 
     drawText(
       context,
@@ -232,21 +273,44 @@ export default class HarajukuOniisanScene {
       gameOverMessageX,
       gameOverMessageY
     );
+
+    const scoreMessage = `YOUR SCORE: ${this.#points}`;
+    const scoreMessageOffsetY = 50;
+
     drawText(
       context,
-      "PRESS Z TO RESTART",
+      scoreMessage,
       gameOverMessageFontSize,
       "black",
       gameOverMessageX + 1,
-      gameOverMessageY + 51
+      gameOverMessageY + scoreMessageOffsetY + 1
     );
     drawText(
       context,
-      "PRESS Z TO RESTART",
+      scoreMessage,
       gameOverMessageFontSize,
       "red",
       gameOverMessageX,
-      gameOverMessageY + 50
+      gameOverMessageY + scoreMessageOffsetY
+    );
+
+    const restartMessage = "PRESS Z TO RESTART";
+    const restartMessageOffsetY = 100;
+    drawText(
+      context,
+      restartMessage,
+      gameOverMessageFontSize,
+      "black",
+      gameOverMessageX + 1,
+      gameOverMessageY + 1 + restartMessageOffsetY
+    );
+    drawText(
+      context,
+      restartMessage,
+      gameOverMessageFontSize,
+      "red",
+      gameOverMessageX,
+      gameOverMessageY + restartMessageOffsetY
     );
   }
 }
