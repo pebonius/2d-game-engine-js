@@ -45,6 +45,7 @@ export default class Game {
       return;
     }
 
+    this.input.update();
     scene.update(this);
 
     this.#lastUpdateTime = Date.now();
