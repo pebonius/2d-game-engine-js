@@ -1,6 +1,11 @@
 import { distance, drawText } from "../graphics.js";
 import SpriteSheet from "../spriteSheet.js";
-import { randomNumber } from "../utilities.js";
+import {
+  cloneArray,
+  passPercentileRoll,
+  randomNumber,
+  removeDead,
+} from "../utilities.js";
 import Cow from "./cow.js";
 import Oniisan from "./oniisan.js";
 import TileMap from "./tileMap.js";
@@ -12,9 +17,6 @@ export default class HarajukuOniisanScene {
   #explosionSpritesheet;
   #tileset;
   #cows;
-  #lastCowSpawnTime;
-  #cowSpawnDelay = 5000;
-  #maxCows = 100;
   #lastLifeDecreaseTime;
   #lifeDecreaseDelay = 1000;
   #gameOver;
@@ -26,10 +28,11 @@ export default class HarajukuOniisanScene {
     this.#oniisanSpritesheet = new SpriteSheet(game.content.oniisan, 28);
     this.#cowSpritesheet = new SpriteSheet(game.content.cow, 128);
     this.#tileset = new SpriteSheet(game.content.tileset, 16);
-    this.map = new TileMap(this.#tileset);
     this.start(game);
   }
   start(game) {
+    this.map = new TileMap(this.#tileset);
+
     const oniisanOffset = 28;
     const startingPosX = game.canvas.width * 0.5 - oniisanOffset;
     const startingPosY = game.canvas.height * 0.5 - oniisanOffset;
@@ -46,13 +49,15 @@ export default class HarajukuOniisanScene {
 
     this.#cows = [];
 
-    this.#lastCowSpawnTime = Date.now();
+    this.bullets = [];
+    this.maxBullets = 3;
 
     this.#lastLifeDecreaseTime = Date.now();
   }
   update(game) {
     if (!this.#gameOver) {
-      this.oniisan.update(game);
+      this.oniisan.update(game, this);
+      this.updateBullets(game);
       this.updateCows(game, this);
       this.spawnCows(game);
     }
@@ -64,6 +69,13 @@ export default class HarajukuOniisanScene {
 
     this.checkForRestart(game);
   }
+  updateBullets(game) {
+    removeDead(this.bullets);
+
+    this.bullets.forEach((bullet) => {
+      bullet.update(game);
+    });
+  }
   checkForRestart(game) {
     if (
       this.#gameOver &&
@@ -74,11 +86,44 @@ export default class HarajukuOniisanScene {
     }
   }
   updateCows(game, scene) {
+    removeDead(this.#cows);
     this.#cows.forEach((cow) => {
       cow.update(game, scene);
-
       this.checkCowlisionWithOniisan(cow);
+      this.checkCowlisionWithBullets(cow);
     });
+  }
+  checkCowlisionWithBullets(cow) {
+    this.bullets.forEach((bullet) => {
+      if (!bullet.isDead) {
+        const bulletMiddle = {
+          x: bullet.positionX + bullet.width * 0.5,
+          y: bullet.positionY + bullet.height * 0.5,
+        };
+
+        const cowMiddle = {
+          x: cow.positionX + cow.width * 0.5,
+          y: cow.positionY + cow.height * 0.5,
+        };
+
+        const collisionDistance = 40;
+
+        if (distance(bulletMiddle, cowMiddle) < collisionDistance) {
+          this.collideWithBullet(cow, bullet);
+        }
+      }
+    });
+  }
+  collideWithBullet(cow, bullet) {
+    bullet.isDead = true;
+
+    this.#points++;
+    cow.life--;
+
+    if (cow.life <= 0) {
+      cow.isDead = true;
+      this.#points += 10;
+    }
   }
   checkCowlisionWithOniisan(cow) {
     if (!this.canHurtOniisan()) {
@@ -95,9 +140,9 @@ export default class HarajukuOniisanScene {
       y: cow.positionY + cow.height * 0.5,
     };
 
-    const collisionDistance = 60;
+    const collisionDistance = 40;
 
-    if (distance(oniisanMiddle, cowMiddle) < 60) {
+    if (distance(oniisanMiddle, cowMiddle) < collisionDistance) {
       this.hurtOniisan();
     }
   }
@@ -111,33 +156,35 @@ export default class HarajukuOniisanScene {
     }
   }
   spawnCows(game) {
-    if (
-      Date.now() - this.#lastCowSpawnTime > this.#cowSpawnDelay &&
-      this.#cows.length < this.#maxCows
-    ) {
-      this.#lastCowSpawnTime = Date.now();
+    const spawnChance = 1 + Math.floor(this.#points / 200);
+    const maxCows = 2 + Math.floor(this.#points / 100);
 
-      const side = randomNumber(0, 1);
-
-      const posX = !side ? 0 : game.canvas.width;
-      const posY = randomNumber(0, game.canvas.height);
-
-      this.#cows.push(new Cow(posX, posY, this.#cowSpritesheet));
+    if (this.#cows.length < maxCows && passPercentileRoll(spawnChance)) {
+      this.addCow(game);
     }
+  }
+  addCow(game) {
+    const side = randomNumber(0, 1);
+
+    const posX = !side ? -100 : game.canvas.width;
+    const posY = randomNumber(0, game.canvas.height);
+
+    this.#cows.push(new Cow(posX, posY, this.#cowSpritesheet));
   }
   draw(context) {
     this.map.draw(context);
-    this.oniisan.draw(context);
-    this.drawCows(context);
+    this.drawSprites(context);
     this.drawLife(context);
     this.drawPoints(context);
     this.drawGameOverText(context);
   }
-  drawCows(context) {
-    this.#cows.sort((a, b) => a.positionY - b.positionY);
+  drawSprites(context) {
+    const toDraw = this.#cows.concat(this.bullets);
+    toDraw.push(this.oniisan);
+    toDraw.sort((a, b) => a.positionY - b.positionY);
 
-    this.#cows.forEach((cow) => {
-      cow.draw(context);
+    toDraw.forEach((sprite) => {
+      sprite.draw(context);
     });
   }
   drawLife(context) {

@@ -11,12 +11,13 @@ play as harajuku oniisan, defend the city from cows and like get as many points 
 - DONE cows hurt oniisan
 - DONE game over state
 - DONE restart
-- oniisan can shoot
-- shooting kills cows
-- getting points
-- cowsplosions
-- add sounds
-- cows become enraged sometimes when you kill a cow
+- DONE oniisan can shoot
+- DONE shooting kills cows
+- DONE getting points
+- cow goes moo when spawning
+- cow goes kaboom when dying
+- oniisan goes argh when getting chewed
+- cows can become enraged when you kill a cow
 - englitchify
 
 ## credits

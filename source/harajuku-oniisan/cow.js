@@ -6,6 +6,7 @@ export default class Cow {
   #width = 90;
   #height = 90;
   #speed = 1;
+  #life = 3;
   #spriteSheet;
   #currentSprite = 0;
   #spriteScale = 2;
@@ -16,7 +17,6 @@ export default class Cow {
   constructor(positionX, positionY, spritesheet) {
     this.positionX = positionX;
     this.positionY = positionY;
-    this.life = 5;
     this.#spriteSheet = spritesheet;
   }
   get positionX() {
@@ -50,6 +50,16 @@ export default class Cow {
     }
 
     this.#height = value;
+  }
+  get life() {
+    return this.#life;
+  }
+  set life(value) {
+    if (!Number.isSafeInteger(value)) {
+      throw new Error("value must be a safe integer");
+    }
+
+    this.#life = value;
   }
   update(game, scene) {
     this.walkTowardsPlayer(game, scene);
@@ -106,16 +116,6 @@ export default class Cow {
     this.updateWalkCycle(12, 14);
   }
   draw(context) {
-    drawRectangle(
-      context,
-      this.positionX,
-      this.positionY,
-      this.width,
-      this.height,
-      0,
-      "brown"
-    );
-
     const spriteOffsetX = -84;
     const spriteOffsetY = -106;
 

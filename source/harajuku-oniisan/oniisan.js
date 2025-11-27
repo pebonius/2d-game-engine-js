@@ -1,8 +1,11 @@
 import { drawRectangle, drawSpriteFromSheet } from "../graphics.js";
+import Bullet from "./bullet.js";
 
 export default class Oniisan {
   #positionX;
   #positionY;
+  #deltaX;
+  #deltaY;
   #width = 56;
   #height = 56;
   #life;
@@ -13,6 +16,9 @@ export default class Oniisan {
   #spriteFlipX = false;
   #walkCycleLastChange = Date.now();
   #walkCycleDelay = 160;
+  #bulletSpeed = 10;
+  #bulletDeltaX = this.#bulletSpeed;
+  #bulletDeltaY = 0;
 
   constructor(positionX, positionY, spritesheet) {
     this.positionX = positionX;
@@ -62,13 +68,23 @@ export default class Oniisan {
 
     this.#life = value;
   }
-  update(game) {
-    this.handleInput(game);
+  update(game, scene) {
+    this.resetDelta();
+    this.handleInput(game, scene);
+    this.move();
+  }
+  resetDelta() {
+    this.#deltaX = 0;
+    this.#deltaY = 0;
+  }
+  move() {
+    this.positionX += this.#deltaX;
+    this.positionY += this.#deltaY;
   }
   resetSprite() {
     this.#currentSprite = 0;
   }
-  handleInput(game) {
+  handleInput(game, scene) {
     if (game.input.isKeyDown(game.input.keys.LEFT)) {
       this.walkLeft(game);
     } else if (game.input.isKeyDown(game.input.keys.RIGHT)) {
@@ -81,6 +97,8 @@ export default class Oniisan {
       this.walkDown(game);
     }
 
+    this.handleShooting(game, scene);
+
     if (
       !game.input.isKeyDown(game.input.keys.LEFT) &&
       !game.input.isKeyDown(game.input.keys.RIGHT) &&
@@ -88,6 +106,50 @@ export default class Oniisan {
       !game.input.isKeyDown(game.input.keys.DOWN)
     ) {
       this.resetSprite();
+    }
+  }
+  handleShooting(game, scene) {
+    if (game.input.isKeyDown(game.input.keys.LEFT)) {
+      this.#bulletDeltaX = -this.#bulletSpeed;
+    }
+    if (game.input.isKeyDown(game.input.keys.RIGHT)) {
+      this.#bulletDeltaX = this.#bulletSpeed;
+    }
+    if (game.input.isKeyDown(game.input.keys.UP)) {
+      this.#bulletDeltaY = -this.#bulletSpeed;
+    }
+    if (game.input.isKeyDown(game.input.keys.DOWN)) {
+      this.#bulletDeltaY = this.#bulletSpeed;
+    }
+    if (
+      (game.input.isKeyDown(game.input.keys.UP) ||
+        game.input.isKeyDown(game.input.keys.DOWN)) &&
+      !game.input.isKeyDown(game.input.keys.LEFT) &&
+      !game.input.isKeyDown(game.input.keys.RIGHT)
+    ) {
+      this.#bulletDeltaX = 0;
+    }
+    if (
+      (game.input.isKeyDown(game.input.keys.LEFT) ||
+        game.input.isKeyDown(game.input.keys.RIGHT)) &&
+      !game.input.isKeyDown(game.input.keys.UP) &&
+      !game.input.isKeyDown(game.input.keys.DOWN)
+    ) {
+      this.#bulletDeltaY = 0;
+    }
+
+    if (game.input.isKeyPressed(game.input.keys.Z)) {
+      this.shoot(scene);
+    }
+  }
+  shoot(scene) {
+    const posX = this.positionX + this.width * 0.5;
+    const posY = this.positionY + this.#height * 0.5;
+
+    if (scene.bullets.length < scene.maxBullets) {
+      scene.bullets.push(
+        new Bullet(posX, posY, this.#bulletDeltaX, this.#bulletDeltaY)
+      );
     }
   }
   updateWalkCycle(sprite1, sprite2, flip = false) {
@@ -103,40 +165,31 @@ export default class Oniisan {
   }
   walkUp(game) {
     if (this.positionY > 0) {
-      this.positionY -= this.#speed;
+      this.#deltaY = -this.#speed;
     }
     this.updateWalkCycle(3, 3, true);
   }
   walkDown(game) {
     if (this.positionY + this.width < game.canvas.height) {
-      this.positionY += this.#speed;
+      this.#deltaY = this.#speed;
     }
     this.updateWalkCycle(0, 1);
   }
   walkLeft(game) {
     if (this.positionX > 0) {
-      this.positionX -= this.#speed;
+      this.#deltaX = -this.#speed;
     }
     this.#spriteFlipX = true;
     this.updateWalkCycle(0, 1);
   }
   walkRight(game) {
     if (this.positionX + this.width < game.canvas.width) {
-      this.positionX += this.#speed;
+      this.#deltaX = this.#speed;
     }
     this.#spriteFlipX = false;
     this.updateWalkCycle(0, 1);
   }
   draw(context) {
-    drawRectangle(
-      context,
-      this.positionX,
-      this.positionY,
-      this.width,
-      this.height,
-      0,
-      "blue"
-    );
     drawSpriteFromSheet(
       context,
       this.#spriteSheet,
