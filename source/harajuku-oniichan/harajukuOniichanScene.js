@@ -7,6 +7,13 @@ import Oniichan from "./oniichan.js";
 import TileMap from "./tileMap.js";
 
 export default class HarajukuOniichanScene {
+  #dataFilePath = "";
+  #imagesPath = "./source/harajuku-oniichan/assets/";
+  #images = ["cow", "explosion", "oniichan", "tileset"];
+  #soundsPath = "./source/harajuku-oniichan/assets/";
+  #sounds = ["cowmoo", "kaboom", "hurt", "dash", "blaster"];
+  #musicTracksPath = "./source/harajuku-oniichan/assets/";
+  #musicTracks = ["crazycow", "loop"];
   #points;
   #oniichanSpritesheet;
   #cowSpritesheet;
@@ -25,17 +32,37 @@ export default class HarajukuOniichanScene {
   #cowKilledShakeDuration = 200;
   #shakeForce = 4;
 
-  constructor(game) {
+  constructor() {}
+  get dataFilePath() {
+    return this.#dataFilePath;
+  }
+  get imagesPath() {
+    return this.#imagesPath;
+  }
+  get images() {
+    return this.#images;
+  }
+  get soundsPath() {
+    return this.#soundsPath;
+  }
+  get sounds() {
+    return this.#sounds;
+  }
+  get musicTracksPath() {
+    return this.#musicTracksPath;
+  }
+  get musicTracks() {
+    return this.#musicTracks;
+  }
+  start(game) {
     this.game = game;
+    this.gameStartTime = Date.now();
+    this.#musicStarted = false;
+
     this.#oniichanSpritesheet = new SpriteSheet(game.content.oniichan, 28);
     this.#cowSpritesheet = new SpriteSheet(game.content.cow, 128);
     this.#explosionSpritesheet = new SpriteSheet(game.content.explosion, 20);
     this.#tileset = new SpriteSheet(game.content.tileset, 16);
-    this.start(game);
-  }
-  start(game) {
-    this.gameStartTime = Date.now();
-    this.#musicStarted = false;
     this.map = new TileMap(this.#tileset);
 
     const oniichanOffset = 28;

@@ -12,13 +12,6 @@ export default class ContentManager {
   #assetsCurrentlyLoading = [];
   #loadingAllAssetsWasTriggered = false;
   #onFinishedLoading;
-  #dataFilePath = "";
-  #imagesPath = "./source/harajuku-oniichan/assets/";
-  #images = ["cow", "explosion", "oniichan", "tileset"];
-  #soundsPath = "./source/harajuku-oniichan/assets/";
-  #sounds = ["cowmoo", "kaboom", "hurt", "dash", "blaster"];
-  #musicTracksPath = "./source/harajuku-oniichan/assets/";
-  #musicTracks = ["crazycow", "loop"];
 
   constructor() {}
   get assetsCurrentlyLoading() {
@@ -51,23 +44,23 @@ export default class ContentManager {
   get loadingId() {
     return this.assetsCurrentlyLoading.length;
   }
-  loadContent() {
-    this.loadData();
-    this.loadImages();
-    this.loadSounds();
-    this.loadMusic();
+  loadContent(dataFilePath, imagesPath, images, soundsPath, sounds, musicTracksPath, musicTracks) {
+    this.loadData(dataFilePath);
+    this.loadImages(imagesPath, images);
+    this.loadSounds(soundsPath, sounds);
+    this.loadMusic(musicTracksPath, musicTracks);
 
     this.loadingAllAssetsWasTriggered = true;
     this.checkIfLoadingFinished();
   }
-  loadData() {
-    if (!this.#dataFilePath) {
+  loadData(dataFilePath) {
+    if (!this.dataFilePath) {
       return;
     }
 
     this.loadJsonObject((json) => {
       this.data = json;
-    }, this.#dataFilePath);
+    }, this.dataFilePath);
   }
   loadJsonObject(assetInjection, filePath) {
     this.debugLogAssetLoading(filePath);
@@ -83,13 +76,11 @@ export default class ContentManager {
         this.removeFromLoadingArray(filePath);
       });
   }
-  loadImages() {
-    if (!this.#imagesPath) {
+  loadImages(imagesPath, images) {
+    if (!imagesPath) {
       Debug.log("path for images not defined, image content not loaded");
       return;
     }
-
-    const images = this.#images;
 
     if (images.length === 0) {
       Debug.log("no images defined, image content not loaded");
@@ -99,7 +90,7 @@ export default class ContentManager {
     images.forEach((imageName) => {
       this.loadImage((image) => {
         this[imageName] = image;
-      }, `${this.#imagesPath}${imageName}.png`);
+      }, `${imagesPath}${imageName}.png`);
     });
   }
   loadImage(assetInjection, filePath) {
@@ -124,13 +115,11 @@ export default class ContentManager {
       onLoad();
     }
   }
-  loadSounds() {
-    if (!this.#soundsPath) {
+  loadSounds(soundsPath, sounds) {
+    if (!soundsPath) {
       Debug.log("path for sounds not defined, sound content not loaded");
       return;
     }
-
-    const sounds = this.#sounds;
 
     if (sounds.length === 0) {
       Debug.log("no sounds defined, sound content not loaded");
@@ -140,7 +129,7 @@ export default class ContentManager {
     sounds.forEach((soundName) => {
       this.loadAudio((audio) => {
         this[soundName] = audio;
-      }, `${this.#soundsPath}${soundName}.ogg`);
+      }, `${soundsPath}${soundName}.ogg`);
     });
   }
   loadAudio(assetInjection, filePath) {
@@ -156,13 +145,11 @@ export default class ContentManager {
       audio.oncanplay = (e) => {};
     };
   }
-  loadMusic() {
-    if (!this.#musicTracksPath) {
+  loadMusic(musicTracksPath, tracks) {
+    if (!musicTracksPath) {
       Debug.log("path for music not defined, music content not loaded");
       return;
     }
-
-    const tracks = this.#musicTracks;
 
     if (tracks.length === 0) {
       Debug.log("no tracks defined, music content not loaded");
@@ -172,7 +159,7 @@ export default class ContentManager {
     tracks.forEach((trackName) => {
       this.loadAudio((audio) => {
         this[trackName] = audio;
-      }, `${this.#musicTracksPath}${trackName}.ogg`);
+      }, `${musicTracksPath}${trackName}.ogg`);
     });
   }
   debugLogAssetLoading(filePath) {

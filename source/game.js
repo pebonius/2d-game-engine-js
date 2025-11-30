@@ -7,22 +7,32 @@ import SoundManager from "./sound.js";
 export default class Game {
   #lastUpdateTime = Date.now();
   #updateRate = 15;
+  #startingScene;
 
-  constructor(startingSceneInitializer) {
+  constructor(startingScene) {
     this.canvas = document.querySelector("#main-canvas");
     this.context = this.canvas.getContext("2d");
     this.context.imageSmoothingEnabled = false;
     this.input = new InputManager(this.canvas);
     this.content = new ContentManager();
     this.sound = new SoundManager();
+    this.#startingScene = startingScene;
     this.content.onFinishedLoading = () => {
-      this.start(startingSceneInitializer);
+      this.start();
     };
-    this.content.loadContent();
+    this.content.loadContent(
+      startingScene.dataFilePath,
+      startingScene.imagesPath,
+      startingScene.images,
+      startingScene.soundsPath,
+      startingScene.sounds,
+      startingScene.musicTracksPath,
+      startingScene.musicTracks
+    );
   }
-  start(startingSceneInitializer) {
-    const startingScene = startingSceneInitializer(this);
-    this.currentScene = startingScene;
+  start() {
+    this.currentScene = this.#startingScene;
+    this.currentScene.start(this);
     this.running = true;
     this.gameLoop();
     Debug.log("game started");
