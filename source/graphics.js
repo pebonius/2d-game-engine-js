@@ -24,7 +24,7 @@ export function clearContext(context) {
 
 export function normalizeRotationDegrees(degrees) {
   if (!Number.isInteger(degrees)) {
-    throw new Error("degrees must be an integer")
+    throw new Error("degrees must be an integer");
   }
 
   let normalizedRotation = degrees % 360;
@@ -72,7 +72,8 @@ export const drawSpriteFromSheet = (
   context,
   spriteSheet,
   spriteIndex,
-  position,
+  x,
+  y,
   flippedX = false,
   flippedY = false,
   scaleX = 1,
@@ -86,8 +87,8 @@ export const drawSpriteFromSheet = (
     0,
     0,
     flippedY ? -1 : 1,
-    position.x + (flippedX ? spriteSheet.tileSize * scaleX : 0),
-    position.y + (flippedY ? spriteSheet.tileSize * scaleY : 0)
+    x + (flippedX ? spriteSheet.tileSize * scaleX : 0),
+    y + (flippedY ? spriteSheet.tileSize * scaleY : 0)
   );
   context.scale(scaleX, scaleY);
   rotateAroundCenter(
