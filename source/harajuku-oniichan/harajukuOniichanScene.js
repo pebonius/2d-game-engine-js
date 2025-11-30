@@ -3,12 +3,12 @@ import SpriteSheet from "../spriteSheet.js";
 import { passPercentileRoll, randomNumber, removeDead } from "../utilities.js";
 import Cow from "./cow.js";
 import Explosion from "./explosion.js";
-import Oniisan from "./oniisan.js";
+import Oniichan from "./oniichan.js";
 import TileMap from "./tileMap.js";
 
-export default class HarajukuOniisanScene {
+export default class HarajukuOniichanScene {
   #points;
-  #oniisanSpritesheet;
+  #oniichanSpritesheet;
   #cowSpritesheet;
   #explosionSpritesheet;
   #tileset;
@@ -21,10 +21,13 @@ export default class HarajukuOniisanScene {
   #musicDelay = 2000;
   #musicStarted = false;
   #explosions;
+  #cowKilledTime;
+  #cowKilledShakeDuration = 200;
+  #shakeForce = 4;
 
   constructor(game) {
     this.game = game;
-    this.#oniisanSpritesheet = new SpriteSheet(game.content.oniisan, 28);
+    this.#oniichanSpritesheet = new SpriteSheet(game.content.oniichan, 28);
     this.#cowSpritesheet = new SpriteSheet(game.content.cow, 128);
     this.#explosionSpritesheet = new SpriteSheet(game.content.explosion, 20);
     this.#tileset = new SpriteSheet(game.content.tileset, 16);
@@ -35,14 +38,14 @@ export default class HarajukuOniisanScene {
     this.#musicStarted = false;
     this.map = new TileMap(this.#tileset);
 
-    const oniisanOffset = 28;
-    const startingPosX = game.canvas.width * 0.5 - oniisanOffset;
-    const startingPosY = game.canvas.height * 0.5 - oniisanOffset;
+    const oniichanOffset = 28;
+    const startingPosX = game.canvas.width * 0.5 - oniichanOffset;
+    const startingPosY = game.canvas.height * 0.5 - oniichanOffset;
 
-    this.oniisan = new Oniisan(
+    this.oniichan = new Oniichan(
       startingPosX,
       startingPosY,
-      this.#oniisanSpritesheet
+      this.#oniichanSpritesheet
     );
 
     this.#gameOver = false;
@@ -68,14 +71,15 @@ export default class HarajukuOniisanScene {
     }
 
     if (!this.#gameOver) {
-      this.oniisan.update(game, this);
-      this.updateBullets(game);
-      this.updateExplosions(game);
-      this.updateCows(game, this);
+      this.oniichan.update(game, this);
       this.spawnCows(game);
+      this.updateCows(game, this);
     }
 
-    if (!this.#gameOver && this.oniisan.life <= 0) {
+    this.updateBullets(game);
+    this.updateExplosions(game);
+
+    if (!this.#gameOver && this.oniichan.life <= 0) {
       this.#gameOver = true;
       game.sound.playMusic(game.content.loop, true);
       this.#gameOverTime = Date.now();
@@ -110,7 +114,7 @@ export default class HarajukuOniisanScene {
     removeDead(this.#cows);
     this.#cows.forEach((cow) => {
       cow.update(game, scene);
-      this.checkCowlisionWithOniisan(cow);
+      this.checkCowlisionWithOniichan(cow);
       this.checkCowlisionWithBullets(cow, game);
     });
   }
@@ -157,18 +161,43 @@ export default class HarajukuOniisanScene {
     if (cow.life <= 0) {
       cow.isDead = true;
       this.#points += 10;
+      this.#cowKilledTime = Date.now();
+      this.explodeCow(cow);
 
       game.sound.playSoundEffect(game.content.kaboom);
     }
   }
-  checkCowlisionWithOniisan(cow) {
-    if (!this.canHurtOniisan()) {
+  explodeCow(cow) {
+    const explosionNumber = 10;
+
+    for (let index = 0; index < explosionNumber; index++) {
+      const posX = randomNumber(cow.positionX, cow.positionX + cow.width);
+      const posY = randomNumber(cow.positionY, cow.positionY + cow.height);
+
+      this.#explosions.push(
+        new Explosion(posX, posY, this.#explosionSpritesheet)
+      );
+    }
+  }
+  mapIsShaking() {
+    if (!this.#cowKilledTime) {
+      return false;
+    }
+
+    if (Date.now() - this.#cowKilledTime > this.#cowKilledShakeDuration) {
+      return false;
+    }
+
+    return true;
+  }
+  checkCowlisionWithOniichan(cow) {
+    if (!this.canHurtOniichan()) {
       return;
     }
 
-    const oniisanMiddle = {
-      x: this.oniisan.positionX + this.oniisan.width * 0.5,
-      y: this.oniisan.positionY + this.oniisan.height * 0.5,
+    const oniichanMiddle = {
+      x: this.oniichan.positionX + this.oniichan.width * 0.5,
+      y: this.oniichan.positionY + this.oniichan.height * 0.5,
     };
 
     const cowMiddle = {
@@ -178,17 +207,18 @@ export default class HarajukuOniisanScene {
 
     const collisionDistance = 40;
 
-    if (distance(oniisanMiddle, cowMiddle) < collisionDistance) {
-      this.hurtOniisan();
+    if (distance(oniichanMiddle, cowMiddle) < collisionDistance) {
+      this.hurtOniichan();
     }
   }
-  canHurtOniisan() {
+  canHurtOniichan() {
     return Date.now() - this.#lastLifeDecreaseTime > this.#lifeDecreaseDelay;
   }
-  hurtOniisan() {
-    if (this.canHurtOniisan()) {
+  hurtOniichan() {
+    if (this.canHurtOniichan()) {
       this.#lastLifeDecreaseTime = Date.now();
-      this.oniisan.life--;
+      this.oniichan.life--;
+      this.game.sound.playSoundEffect(this.game.content.hurt);
     }
   }
   spawnCows(game) {
@@ -210,7 +240,10 @@ export default class HarajukuOniisanScene {
     game.sound.playSoundEffect(game.content.cowmoo);
   }
   draw(context) {
-    this.map.draw(context);
+    const shakeOffset = this.mapIsShaking()
+      ? randomNumber(-this.#shakeForce, this.#shakeForce)
+      : 0;
+    this.map.draw(context, shakeOffset);
     this.drawSprites(context);
     this.drawExplosions(context);
     this.drawLife(context);
@@ -219,7 +252,16 @@ export default class HarajukuOniisanScene {
   }
   drawSprites(context) {
     const toDraw = this.#cows.concat(this.bullets);
-    toDraw.push(this.oniisan);
+
+    if (!this.canHurtOniichan()) {
+      const blink = randomNumber(0, 1) === 1 ? true : false;
+      if (blink) {
+        toDraw.push(this.oniichan);
+      }
+    } else {
+      toDraw.push(this.oniichan);
+    }
+
     toDraw.sort((a, b) => a.positionY - b.positionY);
 
     toDraw.forEach((sprite) => {
@@ -232,7 +274,7 @@ export default class HarajukuOniisanScene {
     });
   }
   drawLife(context) {
-    drawText(context, `LIFE: ${this.oniisan.life}`, 32, "white", 30, 30);
+    drawText(context, `LIFE: ${this.oniichan.life}`, 32, "white", 30, 30);
   }
   drawPoints(context) {
     drawText(context, `POINTS: ${this.#points}`, 32, "white", 360, 30);
@@ -252,7 +294,7 @@ export default class HarajukuOniisanScene {
       "rgba(0, 0, 0, 0.5"
     );
 
-    const gameOverMessage = "GOODNIGHT ONIISAN";
+    const gameOverMessage = "GOODNIGHT ONIICHAN";
     const gameOverMessageFontSize = 32;
     const gameOverMessageX = 160;
     const gameOverMessageY = 160;

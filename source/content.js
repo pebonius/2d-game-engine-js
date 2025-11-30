@@ -13,11 +13,11 @@ export default class ContentManager {
   #loadingAllAssetsWasTriggered = false;
   #onFinishedLoading;
   #dataFilePath = "";
-  #imagesPath = "./source/harajuku-oniisan/assets/";
-  #images = ["cow", "explosion", "oniisan", "tileset"];
-  #soundsPath = "./source/harajuku-oniisan/assets/";
-  #sounds = ["cowmoo", "kaboom"];
-  #musicTracksPath = "./source/harajuku-oniisan/assets/";
+  #imagesPath = "./source/harajuku-oniichan/assets/";
+  #images = ["cow", "explosion", "oniichan", "tileset"];
+  #soundsPath = "./source/harajuku-oniichan/assets/";
+  #sounds = ["cowmoo", "kaboom", "hurt", "dash", "blaster"];
+  #musicTracksPath = "./source/harajuku-oniichan/assets/";
   #musicTracks = ["crazycow", "loop"];
 
   constructor() {}

@@ -65,16 +65,16 @@ export default class Cow {
     this.walkTowardsPlayer(game, scene);
   }
   walkTowardsPlayer(game, scene) {
-    if (scene.oniisan.positionX < this.positionX) {
+    if (scene.oniichan.positionX < this.positionX) {
       this.walkLeft(game);
     }
-    if (scene.oniisan.positionX > this.positionX) {
+    if (scene.oniichan.positionX > this.positionX) {
       this.walkRight(game);
     }
-    if (scene.oniisan.positionY < this.positionY) {
+    if (scene.oniichan.positionY < this.positionY) {
       this.walkUp(game);
     }
-    if (scene.oniisan.positionY > this.positionY) {
+    if (scene.oniichan.positionY > this.positionY) {
       this.walkDown(game);
     }
   }

@@ -1,7 +1,7 @@
-import { drawRectangle, drawSpriteFromSheet } from "../graphics.js";
+import { drawSpriteFromSheet } from "../graphics.js";
 import Bullet from "./bullet.js";
 
-export default class Oniisan {
+export default class Oniichan {
   #positionX;
   #positionY;
   #deltaX;
@@ -19,12 +19,19 @@ export default class Oniisan {
   #bulletSpeed = 10;
   #bulletDeltaX = this.#bulletSpeed;
   #bulletDeltaY = 0;
+  #dashBoost = 3;
+  #isDashing = false;
+  #dashStart;
+  #dashTime = 100;
+  #dashCooldownStart;
+  #dashCooldownTime = 100;
 
   constructor(positionX, positionY, spritesheet) {
     this.positionX = positionX;
     this.positionY = positionY;
     this.life = 5;
     this.#spriteSheet = spritesheet;
+    this.#dashCooldownStart = Date.now();
   }
   get positionX() {
     return this.#positionX;
@@ -71,15 +78,23 @@ export default class Oniisan {
   update(game, scene) {
     this.resetDelta();
     this.handleInput(game, scene);
+    this.updateDash();
     this.move();
+  }
+  updateDash() {
+    if (this.#isDashing && Date.now() - this.#dashStart > this.#dashTime) {
+      this.#isDashing = false;
+      this.#dashCooldownStart = Date.now();
+    }
   }
   resetDelta() {
     this.#deltaX = 0;
     this.#deltaY = 0;
   }
   move() {
-    this.positionX += this.#deltaX;
-    this.positionY += this.#deltaY;
+    const dashBoost = this.#isDashing ? this.#dashBoost : 1;
+    this.positionX += this.#deltaX * dashBoost;
+    this.positionY += this.#deltaY * dashBoost;
   }
   resetSprite() {
     this.#currentSprite = 0;
@@ -97,6 +112,10 @@ export default class Oniisan {
       this.walkDown(game);
     }
 
+    if (game.input.isKeyPressed(game.input.keys.X)) {
+      this.dash(game);
+    }
+
     this.handleShooting(game, scene);
 
     if (
@@ -106,6 +125,16 @@ export default class Oniisan {
       !game.input.isKeyDown(game.input.keys.DOWN)
     ) {
       this.resetSprite();
+    }
+  }
+  dash(game) {
+    if (
+      !this.#isDashing &&
+      Date.now() - this.#dashCooldownStart > this.#dashCooldownTime
+    ) {
+      this.#isDashing = true;
+      this.#dashStart = Date.now();
+      game.sound.playSoundEffect(game.content.dash);
     }
   }
   handleShooting(game, scene) {
@@ -150,6 +179,7 @@ export default class Oniisan {
       scene.bullets.push(
         new Bullet(posX, posY, this.#bulletDeltaX, this.#bulletDeltaY)
       );
+      scene.game.sound.playSoundEffect(scene.game.content.blaster);
     }
   }
   updateWalkCycle(sprite1, sprite2, flip = false) {

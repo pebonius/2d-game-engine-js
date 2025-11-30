@@ -28,17 +28,17 @@ export default class TileMap {
     }
   }
   update(game) {}
-  draw(context) {
+  draw(context, shakeOffset) {
     for (let y = 0; y < this.#height; y++) {
       for (let x = 0; x < this.#width; x++) {
         const tile = this.#mapArray[y][x];
 
-        this.drawTile(context, tile, x, y);
+        this.drawTile(context, tile, x, y, shakeOffset);
       }
     }
   }
-  drawTile(context, tile, x, y) {
-    const posX = x * this.#spriteSheet.tileSize * this.#scale;
+  drawTile(context, tile, x, y, shakeOffset = 0) {
+    const posX = x * this.#spriteSheet.tileSize * this.#scale + shakeOffset;
     const posY = y * this.#spriteSheet.tileSize * this.#scale;
 
     drawSpriteFromSheet(
