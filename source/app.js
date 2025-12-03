@@ -1,8 +1,8 @@
 import Game from "./game.js";
-import HarajukuOniichanScene from "./harajuku-oniichan/harajukuOniichanScene.js";
+import MoldyMeadowsScene from "./moldy-meadows/moldyMeadows.js";
 
 function init() {
-  const game = new Game(new HarajukuOniichanScene());
+  const game = new Game(new MoldyMeadowsScene());
 }
 
 init();
