@@ -3,12 +3,12 @@ import { msToTimeString } from "../utilities.js";
 
 export default class MoldyMeadowsScene {
   #dataFilePath = "";
-  #imagesPath = "./source/harajuku-oniichan/assets/";
-  #images = ["cow", "explosion", "oniichan", "tileset"];
-  #soundsPath = "./source/harajuku-oniichan/assets/";
-  #sounds = ["cowmoo", "kaboom", "hurt", "dash", "blaster"];
-  #musicTracksPath = "./source/harajuku-oniichan/assets/";
-  #musicTracks = ["crazycow", "loop"];
+  #imagesPath = "./source/moldy-meadows/assets/";
+  #images = [];
+  #soundsPath = "./source/moldy-meadows/assets/";
+  #sounds = [];
+  #musicTracksPath = "./source/moldy-meadows/assets/";
+  #musicTracks = [];
   #timeElapsed;
 
   constructor() {}

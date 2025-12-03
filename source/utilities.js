@@ -207,7 +207,7 @@ export const passPercentileRoll = (chance) => {
 
 export const msToTimeString = (ms) => {
   if (!Number.isSafeInteger(ms)) {
-    throw new Error("value must be a safe integer");
+    return "";
   }
 
   const seconds = Math.floor((ms / 1000) % 60);
