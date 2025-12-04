@@ -113,6 +113,34 @@ export const drawSpriteFromSheet = (
   context.restore();
 };
 
+export function drawSprite(
+  context,
+  image,
+  x,
+  y,
+  width,
+  height,
+  flippedX,
+  flippedY,
+  scaleX,
+  scaleY,
+  rotateDeg = 0
+) {
+  context.save();
+  context.transform(
+    flippedX ? -1 : 1,
+    0,
+    0,
+    flippedY ? -1 : 1,
+    x + (flippedX ? width * scaleX : 0),
+    y + (flippedY ? height * scaleY : 0)
+  );
+  context.scale(scaleX, scaleY);
+  rotateAroundCenter(context, 0, 0, width, height, rotateDeg);
+  context.drawImage(image, x, y, image.width, image.height);
+  context.restore();
+}
+
 export function getCanvasCenter(canvas) {
   return { x: canvas.width * 0.5, y: canvas.height * 0.5 };
 }
