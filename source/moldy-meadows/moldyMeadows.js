@@ -1,6 +1,6 @@
 import { drawSprite, drawText } from "../graphics.js";
 import { msToTimeString } from "../utilities.js";
-import Meadow from "./meadow.js";
+import Meadow from "./infiniteBackground.js";
 
 export default class MoldyMeadowsScene {
   #dataFilePath = "";
