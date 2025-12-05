@@ -10,8 +10,9 @@ export default class MoldyMeadowsScene {
   #sounds = [];
   #musicTracksPath = "./source/moldy-meadows/assets/";
   #musicTracks = [];
-  #lastTime;
-  #timeElapsed;
+  #lastUpdateTime;
+  #sceneStartTime;
+  #timeSinceLastUpdate;
   #speed;
   #baseSpeed = 10;
   #acceleration = 0.5;
@@ -55,27 +56,25 @@ export default class MoldyMeadowsScene {
   }
   start(game) {
     this.game = game;
-    this.#lastTime = Date.now();
+    this.#lastUpdateTime = Date.now();
+    this.#sceneStartTime = Date.now();
     this.speed = 3;
     this.distanceTraveled = 0;
     this.meadow = new Meadow(this);
   }
   update(game) {
-    this.#timeElapsed = Date.now() - this.#lastTime;
-    this.distanceTraveled += (this.#timeElapsed * this.#speed) / 1000;
-    this.#lastTime = Date.now();
+    this.#timeSinceLastUpdate = Date.now() - this.#lastUpdateTime;
+    this.timeElapsed = Date.now() - this.#sceneStartTime;
+    this.distanceTraveled += (this.#timeSinceLastUpdate * this.#speed) / 1000;
+    this.#lastUpdateTime = Date.now();
     this.meadow.update(this);
     this.handleInput(game);
     this.restoreBaseSpeed();
   }
   restoreBaseSpeed() {
-    if (this.speed > this.#baseSpeed) {
-      this.speed -= this.#speedThrottle;
-    }
+    const speedDifference = this.#baseSpeed - this.speed;
 
-    if (this.speed < this.#baseSpeed) {
-      this.speed += this.#speedThrottle;
-    }
+    this.speed += speedDifference * 0.01;
   }
   handleInput(game) {
     if (game.input.isKeyDown(game.input.keys.UP)) {
@@ -103,6 +102,15 @@ export default class MoldyMeadowsScene {
       "paleturquoise",
       10,
       42,
+      "Calibri"
+    );
+    drawText(
+      context,
+      `time elapsed: ${msToTimeString(this.timeElapsed)}`,
+      32,
+      "paleturquoise",
+      10,
+      74,
       "Calibri"
     );
   }

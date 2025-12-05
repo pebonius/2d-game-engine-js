@@ -1,4 +1,4 @@
-import { drawSprite, drawText } from "../graphics.js";
+import { drawSprite } from "../graphics.js";
 import { removeFromArray } from "../utilities.js";
 
 export default class InfiniteBackground {
