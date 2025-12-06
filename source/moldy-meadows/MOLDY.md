@@ -11,3 +11,11 @@ UP/ DOWN - accelerate/ throttle
 retro spaceships by Jerom on OGA (https://opengameart.org/content/retro-spaceships), licensed under CC-BY 3.0
 
 isometric floor textures by Screaming Brain Studios on itch (https://screamingbrainstudios.itch.io/isometric-floor-texture-pack), licensed under CC0
+
+## todo
+
+- add thruster animation
+- add spore particles
+- add cellular particles
+- droning sound of the thrusters
+- thruster sound changes pitch and loudness with change speeds

@@ -1,4 +1,5 @@
 import { drawSprite } from "../graphics.js";
+import Thruster from "./thruster.js";
 
 export default class Ship {
   #shipSprite;
@@ -22,6 +23,7 @@ export default class Ship {
     this.maxY = canvas.height - this.height;
     this.minX = 0;
     this.maxX = canvas.width - this.width;
+    this.thruster = new Thruster(scene);
   }
   get positionX() {
     return this.#positionX;
@@ -61,6 +63,7 @@ export default class Ship {
     this.dampMovement();
     this.move();
     this.bindToViewport(scene);
+    this.thruster.update(scene);
   }
   handleInput(scene) {
     const input = scene.game.input;
@@ -180,6 +183,11 @@ export default class Ship {
       this.positionY,
       this.width,
       this.height
+    );
+    this.thruster.draw(
+      context,
+      this.positionX + this.width * 0.5 - this.thruster.width * 0.5,
+      this.positionY + this.height
     );
   }
 }
