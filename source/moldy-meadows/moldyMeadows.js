@@ -18,7 +18,7 @@ export default class MoldyMeadowsScene {
   #acceleration = 0.5;
   #speedThrottle = 0.1;
   #minSpeed = 1;
-  #maxSpeed = 33;
+  #maxSpeed = 32;
 
   constructor() {}
   get dataFilePath() {
@@ -52,6 +52,10 @@ export default class MoldyMeadowsScene {
 
     if (value >= this.#minSpeed && value <= this.#maxSpeed) {
       this.#speed = value;
+    } else if (value > this.#maxSpeed) {
+      this.#speed = this.#maxSpeed;
+    } else if (value < this.#minSpeed) {
+      this.#speed = this.#minSpeed;
     }
   }
   start(game) {
@@ -69,49 +73,61 @@ export default class MoldyMeadowsScene {
     this.#lastUpdateTime = Date.now();
     this.meadow.update(this);
     this.handleInput(game);
-    this.restoreBaseSpeed();
+  }
+  handleInput(game) {
+    if (game.input.isKeyDown(game.input.keys.UP)) {
+      this.speed += this.#acceleration;
+    } else if (game.input.isKeyDown(game.input.keys.DOWN)) {
+      this.speed -= this.#acceleration;
+    } else {
+      this.restoreBaseSpeed();
+    }
   }
   restoreBaseSpeed() {
     const speedDifference = this.#baseSpeed - this.speed;
 
     this.speed += speedDifference * 0.01;
-  }
-  handleInput(game) {
-    if (game.input.isKeyDown(game.input.keys.UP)) {
-      this.speed += this.#acceleration;
-    }
-    if (game.input.isKeyDown(game.input.keys.DOWN)) {
-      this.speed -= this.#acceleration;
+
+    const minDifference = 0.3;
+    if (speedDifference >= -minDifference && speedDifference <= minDifference) {
+      this.speed = this.#baseSpeed;
     }
   }
   draw(context) {
     this.meadow.draw(context);
+
+    const topMargin = 10;
+    const leftMargin = 10;
+    const fontSize = 28;
+    const fontColor = "paleturquoise";
+    const font = "Calibri";
+
     drawText(
       context,
       `speed: ${Math.floor(this.speed)} m/s`,
-      32,
-      "paleturquoise",
-      10,
-      10,
-      "Calibri"
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin,
+      font
     );
     drawText(
       context,
-      `distance traveled: ${Math.floor(this.distanceTraveled)} m`,
-      32,
-      "paleturquoise",
-      10,
-      42,
-      "Calibri"
+      `distance traveled: ${Math.round(this.distanceTraveled)} m`,
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin + fontSize,
+      font
     );
     drawText(
       context,
       `time elapsed: ${msToTimeString(this.timeElapsed)}`,
-      32,
-      "paleturquoise",
-      10,
-      74,
-      "Calibri"
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin + fontSize * 2,
+      font
     );
   }
 }
