@@ -1,11 +1,12 @@
 import { drawSprite, drawText } from "../graphics.js";
 import { msToTimeString } from "../utilities.js";
 import Meadow from "./infiniteBackground.js";
+import Ship from "./ship.js";
 
 export default class MoldyMeadowsScene {
   #dataFilePath = "";
   #imagesPath = "./source/moldy-meadows/assets/";
-  #images = ["mold"];
+  #images = ["mold", "ship", "thruster"];
   #soundsPath = "./source/moldy-meadows/assets/";
   #sounds = [];
   #musicTracksPath = "./source/moldy-meadows/assets/";
@@ -14,11 +15,11 @@ export default class MoldyMeadowsScene {
   #sceneStartTime;
   #timeSinceLastUpdate;
   #speed;
-  #baseSpeed = 10;
+  #baseSpeed = 25;
   #acceleration = 0.5;
   #speedThrottle = 0.1;
-  #minSpeed = 1;
-  #maxSpeed = 32;
+  #minSpeed = 5;
+  #maxSpeed = 50;
 
   constructor() {}
   get dataFilePath() {
@@ -62,9 +63,10 @@ export default class MoldyMeadowsScene {
     this.game = game;
     this.#lastUpdateTime = Date.now();
     this.#sceneStartTime = Date.now();
-    this.speed = 3;
+    this.speed = 5;
     this.distanceTraveled = 0;
     this.meadow = new Meadow(this);
+    this.ship = new Ship(this);
   }
   update(game) {
     this.#timeSinceLastUpdate = Date.now() - this.#lastUpdateTime;
@@ -72,12 +74,13 @@ export default class MoldyMeadowsScene {
     this.distanceTraveled += (this.#timeSinceLastUpdate * this.#speed) / 1000;
     this.#lastUpdateTime = Date.now();
     this.meadow.update(this);
+    this.ship.update(this);
     this.handleInput(game);
   }
   handleInput(game) {
-    if (game.input.isKeyDown(game.input.keys.UP)) {
+    if (game.input.isKeyDown(game.input.keys.W)) {
       this.speed += this.#acceleration;
-    } else if (game.input.isKeyDown(game.input.keys.DOWN)) {
+    } else if (game.input.isKeyDown(game.input.keys.S)) {
       this.speed -= this.#acceleration;
     } else {
       this.restoreBaseSpeed();
@@ -95,25 +98,78 @@ export default class MoldyMeadowsScene {
   }
   draw(context) {
     this.meadow.draw(context);
+    this.ship.draw(context);
 
     const topMargin = 10;
     const leftMargin = 10;
     const fontSize = 28;
+    const unitFontSize = 18;
+    const unitTopOffset = fontSize - unitFontSize - 2;
     const fontColor = "paleturquoise";
     const font = "Calibri";
 
-    drawText(
+    this.drawSpeed(
       context,
-      `speed: ${Math.floor(this.speed)} m/s`,
       fontSize,
       fontColor,
       leftMargin,
       topMargin,
-      font
+      font,
+      unitFontSize,
+      unitTopOffset
     );
+
+    this.drawDistance(
+      context,
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin,
+      font,
+      unitFontSize,
+      unitTopOffset
+    );
+
+    this.drawTime(
+      context,
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin,
+      font,
+      unitFontSize,
+      unitTopOffset
+    );
+  }
+  drawTime(
+    context,
+    fontSize,
+    fontColor,
+    leftMargin,
+    topMargin,
+    font,
+    unitFontSize,
+    unitTopOffset
+  ) {
+    const timeString = `${msToTimeString(this.timeElapsed)}`;
+    const posY = topMargin + fontSize * 2;
+    drawText(context, timeString, fontSize, fontColor, leftMargin, posY, font);
+  }
+  drawDistance(
+    context,
+    fontSize,
+    fontColor,
+    leftMargin,
+    topMargin,
+    font,
+    unitFontSize,
+    unitTopOffset
+  ) {
+    const distanceString = `${Math.round(this.distanceTraveled)} `;
+
     drawText(
       context,
-      `distance traveled: ${Math.round(this.distanceTraveled)} m`,
+      distanceString,
       fontSize,
       fontColor,
       leftMargin,
@@ -122,11 +178,34 @@ export default class MoldyMeadowsScene {
     );
     drawText(
       context,
-      `time elapsed: ${msToTimeString(this.timeElapsed)}`,
-      fontSize,
+      `m`,
+      unitFontSize,
       fontColor,
-      leftMargin,
-      topMargin + fontSize * 2,
+      leftMargin + context.measureText(distanceString).width,
+      topMargin + fontSize + unitTopOffset,
+      font
+    );
+  }
+  drawSpeed(
+    context,
+    fontSize,
+    fontColor,
+    leftMargin,
+    topMargin,
+    font,
+    unitFontSize,
+    unitTopOffset
+  ) {
+    const speedString = `${Math.floor((this.speed / this.#maxSpeed) * 100)} `;
+    const posY = topMargin;
+    drawText(context, speedString, fontSize, fontColor, leftMargin, posY, font);
+    drawText(
+      context,
+      `%`,
+      unitFontSize,
+      fontColor,
+      leftMargin + context.measureText(speedString).width,
+      posY + unitTopOffset,
       font
     );
   }
