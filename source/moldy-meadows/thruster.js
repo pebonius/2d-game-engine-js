@@ -44,7 +44,7 @@ export default class Thruster {
     this.updateHeight(scene);
   }
   updateHeight(scene) {
-    this.height = 2 * Math.floor(this.#baseHeight * (scene.speed * 0.1) * (this.animationTimeElapsed * 0.02));
+    this.height = 2 * Math.floor(this.#baseHeight * (scene.speed * 0.1) * (this.animationTimeElapsed * 0.01));
 
     const heightChange = this.height * 0.25;
     this.height += randomNumber(-heightChange, heightChange);

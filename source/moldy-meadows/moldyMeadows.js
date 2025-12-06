@@ -6,7 +6,7 @@ import Ship from "./ship.js";
 export default class MoldyMeadowsScene {
   #dataFilePath = "";
   #imagesPath = "./source/moldy-meadows/assets/";
-  #images = ["mold", "ship", "thruster"];
+  #images = ["mold", "ship", "thruster", "shadow"];
   #soundsPath = "./source/moldy-meadows/assets/";
   #sounds = [];
   #musicTracksPath = "./source/moldy-meadows/assets/";
@@ -75,16 +75,12 @@ export default class MoldyMeadowsScene {
     this.#lastUpdateTime = Date.now();
     this.meadow.update(this);
     this.ship.update(this);
-    this.handleInput(game);
   }
-  handleInput(game) {
-    if (game.input.isKeyDown(game.input.keys.W)) {
-      this.speed += this.#acceleration;
-    } else if (game.input.isKeyDown(game.input.keys.S)) {
-      this.speed -= this.#acceleration;
-    } else {
-      this.restoreBaseSpeed();
-    }
+  increaseSpeed() {
+    this.speed += this.#acceleration;
+  }
+  decreaseSpeed() {
+    this.speed -= this.#acceleration;
   }
   restoreBaseSpeed() {
     const speedDifference = this.#baseSpeed - this.speed;

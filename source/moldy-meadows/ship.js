@@ -1,4 +1,5 @@
 import { drawSprite } from "../graphics.js";
+import { randomNumber } from "../utilities.js";
 import Thruster from "./thruster.js";
 
 export default class Ship {
@@ -6,17 +7,18 @@ export default class Ship {
   #positionX;
   #positionY;
   #deltaX = 0;
-  #deltaY = 0;
-  #maxDelta = 8;
-  #movementDamping = 0.9;
+  #deltaY = -3;
+  #maxDelta = 5;
+  #movementDamping = 0.92;
   #width = 112;
   #height = 48;
   #speed = 1;
+  #shadowImage;
 
   constructor(scene) {
     this.#shipSprite = scene.game.content.ship;
     this.positionX = scene.game.canvas.width * 0.5 - this.#width * 0.5;
-    this.positionY = 200;
+    this.positionY = 300;
     const canvas = scene.game.canvas;
     this.movementBoundsMargin = 48;
     this.minY = 0;
@@ -24,6 +26,7 @@ export default class Ship {
     this.minX = 0;
     this.maxX = canvas.width - this.width;
     this.thruster = new Thruster(scene);
+    this.#shadowImage = scene.game.content.shadow;
   }
   get positionX() {
     return this.#positionX;
@@ -69,15 +72,19 @@ export default class Ship {
     const input = scene.game.input;
     const keys = scene.game.input.keys;
 
-    if (input.isKeyDown(keys.W)) {
+    if (input.isKeyDown(keys.W) || input.isKeyDown(keys.UP)) {
       this.moveUp(scene);
-    } else if (input.isKeyDown(keys.S)) {
+      scene.increaseSpeed();
+    } else if (input.isKeyDown(keys.S) || input.isKeyDown(keys.DOWN)) {
       this.moveDown(scene);
+      scene.decreaseSpeed();
+    } else {
+      scene.restoreBaseSpeed();
     }
 
-    if (input.isKeyDown(keys.A)) {
+    if (input.isKeyDown(keys.A) || input.isKeyDown(keys.LEFT)) {
       this.moveLeft(scene);
-    } else if (input.isKeyDown(keys.D)) {
+    } else if (input.isKeyDown(keys.D) || input.isKeyDown(keys.RIGHT)) {
       this.moveRight(scene);
     }
   }
@@ -176,6 +183,19 @@ export default class Ship {
     }
   }
   draw(context) {
+    const shadowWidth = this.width * 1.0;
+    const shadowHeight = this.height * 1.2;
+    const shadowOffsetX = 0;
+    const shadowOffsetY = 160 + randomNumber(0, 2);
+
+    drawSprite(
+      context,
+      this.#shadowImage,
+      this.positionX + this.width * 0.5 - shadowWidth * 0.5 + shadowOffsetX,
+      this.positionY + this.height * 0.5 - shadowHeight * 0.5 + shadowOffsetY,
+      shadowWidth,
+      shadowHeight
+    );
     drawSprite(
       context,
       this.#shipSprite,
