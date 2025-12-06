@@ -16,7 +16,8 @@ isometric floor textures by Screaming Brain Studios on itch (https://screamingbr
 
 - DONE add thruster animation
 - DONE add ship shadow
-- add spore particles
+- DONE add spore particles
 - add cellular particles
 - droning sound of the thrusters
 - thruster sound changes pitch and loudness with change speeds
+- ambient music

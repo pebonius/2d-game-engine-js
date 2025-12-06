@@ -2,6 +2,7 @@ import { drawSprite, drawText } from "../graphics.js";
 import { msToTimeString } from "../utilities.js";
 import Meadow from "./infiniteBackground.js";
 import Ship from "./ship.js";
+import Spores from "./spores.js";
 
 export default class MoldyMeadowsScene {
   #dataFilePath = "";
@@ -67,6 +68,7 @@ export default class MoldyMeadowsScene {
     this.distanceTraveled = 0;
     this.meadow = new Meadow(this);
     this.ship = new Ship(this);
+    this.spores = new Spores(this);
   }
   update(game) {
     this.#timeSinceLastUpdate = Date.now() - this.#lastUpdateTime;
@@ -75,6 +77,7 @@ export default class MoldyMeadowsScene {
     this.#lastUpdateTime = Date.now();
     this.meadow.update(this);
     this.ship.update(this);
+    this.spores.update(this);
   }
   increaseSpeed() {
     this.speed += this.#acceleration;
@@ -95,7 +98,10 @@ export default class MoldyMeadowsScene {
   draw(context) {
     this.meadow.draw(context);
     this.ship.draw(context);
-
+    this.spores.draw(context);
+    this.drawHud(context);
+  }
+  drawHud(context) {
     const topMargin = 10;
     const leftMargin = 10;
     const fontSize = 28;
@@ -137,6 +143,7 @@ export default class MoldyMeadowsScene {
       unitTopOffset
     );
   }
+
   drawTime(
     context,
     fontSize,
