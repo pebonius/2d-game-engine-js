@@ -23,4 +23,5 @@ isometric floor textures by Screaming Brain Studios on itch (https://screamingbr
 - droning sound of the thrusters
 - thruster sound changes pitch and loudness with change speeds
 - ambient music
+- improve hud for speed (graphical feedback)?
 - some collecting mechanic?

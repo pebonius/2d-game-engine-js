@@ -1,5 +1,5 @@
-import { drawSprite, drawText, stringWidth } from "../graphics.js";
-import { msToTimeString } from "../utilities.js";
+import { drawText, stringWidth } from "../graphics.js";
+import { randomNumber, msToTimeString } from "../utilities.js";
 import Meadow from "./infiniteBackground.js";
 import Ship from "./ship.js";
 import Spores from "./spores.js";
@@ -18,7 +18,6 @@ export default class MoldyMeadowsScene {
   #speed;
   #baseSpeed = 25;
   #acceleration = 0.5;
-  #speedThrottle = 0.1;
   #minSpeed = 5;
   #maxSpeed = 50;
 
@@ -170,7 +169,7 @@ export default class MoldyMeadowsScene {
     unitFontSize,
     unitTopOffset
   ) {
-    const distanceString = `${Math.round(this.distanceTraveled)} `;
+    const distanceString = `${Math.round(this.distanceTraveled)}`;
     const distanceStringWidth = stringWidth(context, distanceString, fontSize);
     const posX = context.canvas.width * 0.5 - distanceStringWidth * 0.5;
 
@@ -203,16 +202,22 @@ export default class MoldyMeadowsScene {
     unitFontSize,
     unitTopOffset
   ) {
-    const speedString = `${Math.floor((this.speed / this.#maxSpeed) * 100)} `;
+    const speedPercent = Math.floor((this.speed / this.#maxSpeed) * 100);
+    const speedString = `${speedPercent}`;
     const speedStringWidth = stringWidth(context, speedString, fontSize);
     const posY = topMargin;
-    drawText(context, speedString, fontSize, fontColor, leftMargin, posY, font);
+    const randomColor = `rgba(${randomNumber(100, 255)}, ${randomNumber(
+      100,
+      255
+    )}, ${randomNumber(100, 255)}, 1)`;
+    const color = speedPercent > 90 ? randomColor : fontColor;
+    drawText(context, speedString, fontSize, color, leftMargin, posY, font);
     drawText(
       context,
       `%`,
       unitFontSize,
-      fontColor,
-      leftMargin + speedStringWidth - 4,
+      color,
+      leftMargin + speedStringWidth,
       posY + unitTopOffset,
       font
     );
