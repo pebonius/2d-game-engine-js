@@ -9,7 +9,7 @@ export default class MoldyMeadowsScene {
   #imagesPath = "./source/moldy-meadows/assets/";
   #images = ["mold", "ship", "thruster", "shadow"];
   #soundsPath = "./source/moldy-meadows/assets/";
-  #sounds = [];
+  #sounds = ["thrustersound"];
   #musicTracksPath = "./source/moldy-meadows/assets/";
   #musicTracks = ["anotheraugust"];
   #lastUpdateTime;
@@ -22,6 +22,8 @@ export default class MoldyMeadowsScene {
   #maxSpeed = 50;
   #musicDelay = 3000;
   #musicPlaying;
+  #thrusterSoundDelay = 200;
+  #thrusterSoundTime;
 
   constructor() {}
   get dataFilePath() {
@@ -71,12 +73,12 @@ export default class MoldyMeadowsScene {
     this.ship = new Ship(this);
     this.spores = new Spores(this);
     this.#musicPlaying = false;
+    this.#thrusterSoundTime = Date.now();
   }
   update(game) {
     const now = Date.now();
-    if (!this.#musicPlaying && now - this.#sceneStartTime >= this.#musicDelay) {
-      game.sound.playMusic(game.content.anotheraugust, true);
-    }
+    this.startMusic(now, game);
+    this.playThrusterSound(now, game);
     this.#timeSinceLastUpdate = Date.now() - this.#lastUpdateTime;
     this.timeElapsed = Date.now() - this.#sceneStartTime;
     this.distanceTraveled += (this.#timeSinceLastUpdate * this.#speed) / 1000;
@@ -85,6 +87,19 @@ export default class MoldyMeadowsScene {
     this.ship.update(this);
     this.spores.update(this);
   }
+  startMusic(now, game) {
+    if (!this.#musicPlaying && now - this.#sceneStartTime >= this.#musicDelay) {
+      game.sound.playMusic(game.content.anotheraugust, true);
+    }
+  }
+  playThrusterSound(now, game) {
+    if (now - this.#thrusterSoundTime >
+      this.#thrusterSoundDelay - randomNumber(0, this.#thrusterSoundDelay * 0.5) - this.#speed * 2) {
+      game.sound.playSoundEffect(game.content.thrustersound, ((this.speed) / this.#maxSpeed));
+      this.#thrusterSoundTime = Date.now();
+    }
+  }
+
   increaseSpeed() {
     this.speed += this.#acceleration;
   }

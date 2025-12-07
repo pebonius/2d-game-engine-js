@@ -1,6 +1,6 @@
 # moldy meadows
 
-moldy meadows is an interactive screensaver/ toy, in which you can traverse a sea of mold and look at the shimmering spores
+moldy meadows is an interactive screensaver, in which you can traverse a sea of mold and look at shimmering spores
 
 ## controls
 
@@ -26,8 +26,8 @@ Another August by The Cynic Project / cynicmusic.com / pixelsphere.org (https://
 - DONE add thruster animation
 - DONE add ship shadow
 - DONE add spore particles
-- droning sound of the thrusters
-- thruster sound changes pitch and loudness with change speeds
+- DONE droning sound of the thrusters
+- DONE thruster sound changes intensity with change speeds
 - DONE ambient music
 - improve hud for speed (graphical feedback)?
 - some collecting mechanic?

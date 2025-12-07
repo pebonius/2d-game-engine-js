@@ -39,7 +39,7 @@ export default class SoundManager {
   set musicVolume(value) {
     this._musicVolume = clamp(value, 0, 1);
   }
-  playSoundEffect(audio) {
+  playSoundEffect(audio, volumeAdjust) {
     if (!(audio instanceof HTMLAudioElement)) {
       throw new TypeError(`audio must be a HTMLAudioElement`);
     }
@@ -50,6 +50,7 @@ export default class SoundManager {
 
     const sound = new Audio();
     sound.src = audio.src;
+    sound.volume = clamp(this.sfxVolume + volumeAdjust, 0, 1);
     this.playAudio(sound);
   }
   playMusic(audio, loop) {
