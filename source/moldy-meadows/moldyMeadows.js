@@ -11,7 +11,7 @@ export default class MoldyMeadowsScene {
   #soundsPath = "./source/moldy-meadows/assets/";
   #sounds = [];
   #musicTracksPath = "./source/moldy-meadows/assets/";
-  #musicTracks = [];
+  #musicTracks = ["anotheraugust"];
   #lastUpdateTime;
   #sceneStartTime;
   #timeSinceLastUpdate;
@@ -20,6 +20,8 @@ export default class MoldyMeadowsScene {
   #acceleration = 0.5;
   #minSpeed = 5;
   #maxSpeed = 50;
+  #musicDelay = 3000;
+  #musicPlaying;
 
   constructor() {}
   get dataFilePath() {
@@ -68,8 +70,13 @@ export default class MoldyMeadowsScene {
     this.meadow = new Meadow(this);
     this.ship = new Ship(this);
     this.spores = new Spores(this);
+    this.#musicPlaying = false;
   }
   update(game) {
+    const now = Date.now();
+    if (!this.#musicPlaying && now - this.#sceneStartTime >= this.#musicDelay) {
+      game.sound.playMusic(game.content.anotheraugust, true);
+    }
     this.#timeSinceLastUpdate = Date.now() - this.#lastUpdateTime;
     this.timeElapsed = Date.now() - this.#sceneStartTime;
     this.distanceTraveled += (this.#timeSinceLastUpdate * this.#speed) / 1000;

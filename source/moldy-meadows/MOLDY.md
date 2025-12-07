@@ -11,9 +11,15 @@ you can also use WSAD
 
 ## credits
 
-retro spaceships by Jerom on OGA (https://opengameart.org/content/retro-spaceships), licensed under CC-BY 3.0
+graphics:
+
+retro spaceships by Jerom on OGA (https://opengameart.org/content/retro-spaceships), licensed under CC-BY 3.0 https://creativecommons.org/licenses/by/3.0/
 
 isometric floor textures by Screaming Brain Studios on itch (https://screamingbrainstudios.itch.io/isometric-floor-texture-pack), licensed under CC0
+
+music:
+
+Another August by The Cynic Project / cynicmusic.com / pixelsphere.org (https://opengameart.org/content/another-august), licensed under CC0
 
 ## todo
 
@@ -22,6 +28,6 @@ isometric floor textures by Screaming Brain Studios on itch (https://screamingbr
 - DONE add spore particles
 - droning sound of the thrusters
 - thruster sound changes pitch and loudness with change speeds
-- ambient music
+- DONE ambient music
 - improve hud for speed (graphical feedback)?
 - some collecting mechanic?
