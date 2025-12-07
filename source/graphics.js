@@ -1,5 +1,9 @@
 export const defaultFont = "Arial";
 
+export const setFontSize = (context, sizeInPx) => {
+  context.font = `${sizeInPx}px ${defaultFont}`;
+};
+
 export const drawText = (
   context,
   text,

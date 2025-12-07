@@ -1,10 +1,13 @@
 # moldy meadows
 
-traverse a moldy meadow and observe its "inhabitants"
+moldy meadows is an interactive screensaver/ toy, in which you can traverse a sea of mold and look at the shimmering spores
 
 ## controls
 
 UP/ DOWN - accelerate/ throttle
+LEFT/ RIGHT - steer
+
+you can also use WSAD
 
 ## credits
 
@@ -17,7 +20,7 @@ isometric floor textures by Screaming Brain Studios on itch (https://screamingbr
 - DONE add thruster animation
 - DONE add ship shadow
 - DONE add spore particles
-- add cellular particles
 - droning sound of the thrusters
 - thruster sound changes pitch and loudness with change speeds
 - ambient music
+- some collecting mechanic?

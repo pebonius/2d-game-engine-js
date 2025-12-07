@@ -1,4 +1,4 @@
-import { drawSprite, drawText } from "../graphics.js";
+import { drawSprite, drawText, setFontSize } from "../graphics.js";
 import { msToTimeString } from "../utilities.js";
 import Meadow from "./infiniteBackground.js";
 import Ship from "./ship.js";
@@ -110,6 +110,17 @@ export default class MoldyMeadowsScene {
     const fontColor = "paleturquoise";
     const font = "Calibri";
 
+    this.drawTime(
+      context,
+      fontSize,
+      fontColor,
+      leftMargin,
+      topMargin,
+      font,
+      unitFontSize,
+      unitTopOffset
+    );
+
     this.drawSpeed(
       context,
       fontSize,
@@ -122,17 +133,6 @@ export default class MoldyMeadowsScene {
     );
 
     this.drawDistance(
-      context,
-      fontSize,
-      fontColor,
-      leftMargin,
-      topMargin,
-      font,
-      unitFontSize,
-      unitTopOffset
-    );
-
-    this.drawTime(
       context,
       fontSize,
       fontColor,
@@ -155,8 +155,11 @@ export default class MoldyMeadowsScene {
     unitTopOffset
   ) {
     const timeString = `${msToTimeString(this.timeElapsed)}`;
-    const posY = topMargin + fontSize * 2;
-    drawText(context, timeString, fontSize, fontColor, leftMargin, posY, font);
+    setFontSize(context, fontSize);
+    const posY = topMargin;
+    const posX =
+      context.canvas.width - context.measureText(timeString).width - leftMargin;
+    drawText(context, timeString, fontSize, fontColor, posX, posY, font);
   }
   drawDistance(
     context,
@@ -169,14 +172,17 @@ export default class MoldyMeadowsScene {
     unitTopOffset
   ) {
     const distanceString = `${Math.round(this.distanceTraveled)} `;
+    setFontSize(context, fontSize);
+    const distanceStringWidth = context.measureText(distanceString).width;
+    const posX = context.canvas.width * 0.5 - distanceStringWidth * 0.5;
 
     drawText(
       context,
       distanceString,
       fontSize,
       fontColor,
-      leftMargin,
-      topMargin + fontSize,
+      posX,
+      topMargin,
       font
     );
     drawText(
@@ -184,8 +190,8 @@ export default class MoldyMeadowsScene {
       `m`,
       unitFontSize,
       fontColor,
-      leftMargin + context.measureText(distanceString).width,
-      topMargin + fontSize + unitTopOffset,
+      posX + context.measureText(distanceString).width,
+      topMargin + unitTopOffset,
       font
     );
   }
