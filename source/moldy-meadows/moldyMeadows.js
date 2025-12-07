@@ -1,4 +1,4 @@
-import { drawSprite, drawText, setFontSize } from "../graphics.js";
+import { drawSprite, drawText, stringWidth } from "../graphics.js";
 import { msToTimeString } from "../utilities.js";
 import Meadow from "./infiniteBackground.js";
 import Ship from "./ship.js";
@@ -155,10 +155,9 @@ export default class MoldyMeadowsScene {
     unitTopOffset
   ) {
     const timeString = `${msToTimeString(this.timeElapsed)}`;
-    setFontSize(context, fontSize);
+    const timeStringWidth = stringWidth(context, timeString, fontSize);
     const posY = topMargin;
-    const posX =
-      context.canvas.width - context.measureText(timeString).width - leftMargin;
+    const posX = context.canvas.width - timeStringWidth - leftMargin + 4;
     drawText(context, timeString, fontSize, fontColor, posX, posY, font);
   }
   drawDistance(
@@ -172,8 +171,7 @@ export default class MoldyMeadowsScene {
     unitTopOffset
   ) {
     const distanceString = `${Math.round(this.distanceTraveled)} `;
-    setFontSize(context, fontSize);
-    const distanceStringWidth = context.measureText(distanceString).width;
+    const distanceStringWidth = stringWidth(context, distanceString, fontSize);
     const posX = context.canvas.width * 0.5 - distanceStringWidth * 0.5;
 
     drawText(
@@ -190,7 +188,7 @@ export default class MoldyMeadowsScene {
       `m`,
       unitFontSize,
       fontColor,
-      posX + context.measureText(distanceString).width,
+      posX + distanceStringWidth,
       topMargin + unitTopOffset,
       font
     );
@@ -206,6 +204,7 @@ export default class MoldyMeadowsScene {
     unitTopOffset
   ) {
     const speedString = `${Math.floor((this.speed / this.#maxSpeed) * 100)} `;
+    const speedStringWidth = stringWidth(context, speedString, fontSize);
     const posY = topMargin;
     drawText(context, speedString, fontSize, fontColor, leftMargin, posY, font);
     drawText(
@@ -213,7 +212,7 @@ export default class MoldyMeadowsScene {
       `%`,
       unitFontSize,
       fontColor,
-      leftMargin + context.measureText(speedString).width,
+      leftMargin + speedStringWidth - 4,
       posY + unitTopOffset,
       font
     );

@@ -1,7 +1,9 @@
 export const defaultFont = "Arial";
 
-export const setFontSize = (context, sizeInPx) => {
-  context.font = `${sizeInPx}px ${defaultFont}`;
+export const stringWidth = (context, text, fontSize) => {
+  context.font = `${fontSize}px ${defaultFont}`;
+
+  return context.measureText(text).width;
 };
 
 export const drawText = (
